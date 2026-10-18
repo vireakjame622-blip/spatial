@@ -145,6 +145,97 @@ export default function CleanCityGameSection({ lang }) {
           </p>
         </div>
 
+        {/* Authentic Cambodian Tuk-Tuk Spotlight Banner */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(6, 78, 59, 0.85) 100%)',
+          borderRadius: '20px',
+          border: '1px solid rgba(34, 197, 94, 0.35)',
+          padding: '20px 24px',
+          marginBottom: '24px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '24px',
+          boxShadow: '0 15px 35px rgba(0,0,0,0.2), 0 0 25px rgba(34, 197, 94, 0.1)',
+          flexWrap: 'wrap'
+        }}>
+          {/* Left: Tuk-Tuk Image with Glow */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minWidth: '200px',
+            flex: '0 0 auto',
+            position: 'relative'
+          }}>
+            <div style={{
+              position: 'absolute',
+              width: '180px',
+              height: '180px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(34, 197, 94, 0.35) 0%, transparent 70%)',
+              filter: 'blur(20px)',
+              pointerEvents: 'none'
+            }} />
+            <img
+              src="/images/cambodian_tuktuk.png"
+              alt="Authentic Cambodian Tuk-Tuk 3D Model"
+              style={{
+                height: '150px',
+                width: 'auto',
+                objectFit: 'contain',
+                position: 'relative',
+                zIndex: 1,
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))'
+              }}
+            />
+          </div>
+
+          {/* Right: Vehicle Info & Specifications */}
+          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{
+                background: 'rgba(34, 197, 94, 0.2)',
+                color: '#4ADE80',
+                border: '1px solid rgba(34, 197, 94, 0.4)',
+                padding: '3px 10px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                letterSpacing: '0.04em'
+              }}>
+                🇰🇭 OFFICIAL QUEST VEHICLE
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#CBD5E1', fontWeight: 600 }}>
+                Phsar Thmey & Sisowath Quay
+              </span>
+            </div>
+
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: 0, lineHeight: 1.3 }}>
+              {isKhmer ? 'យានរ៉ឺម៉កកង់បី អេកូឡូស៊ី (Cambodian Eco Tuk-Tuk)' : 'Cambodian Eco Tuk-Tuk (Remorque 3-Wheeler)'}
+            </h3>
+
+            <p style={{ fontSize: '0.84rem', color: '#94A3B8', margin: 0, lineHeight: 1.5 }}>
+              {isKhmer
+                ? 'យានជំនិះ 3D ផ្លូវការក្នុងហ្គេម៖ បើកបរប្រមូលសំរាម ដឹកជញ្ជូនរហូតដល់ ១០ មុខ ញែកចូលធុង ៥ ពណ៌ និងបាញ់ពន្លត់ផ្សែងពុលក្នុងរាជធានីភ្នំពេញ។'
+                : 'Featured 3D in-game vehicle: Pilot the 3-wheeled Remorque, pick up street litter, transport up to 10 items to recycling stations, and extinguish toxic smog fires.'}
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.74rem', color: '#E2E8F0', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                ⚡ {isKhmer ? 'ម៉ូទ័រអេឡិចត្រូនិក Solar' : 'Solar-Electric Drive'}
+              </span>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.74rem', color: '#E2E8F0', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                📦 {isKhmer ? 'ឃ្លាំងផ្ទុក ១០ មុខ' : '10-Item Multi-Bin Cargo'}
+              </span>
+              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.74rem', color: '#E2E8F0', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                🧯 {isKhmer ? 'ប្រព័ន្ធពន្លត់ភ្លើង [E]' : 'Smog Extinguisher [E]'}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Embedded Game Player Container */}
         <div 
           ref={containerRef}

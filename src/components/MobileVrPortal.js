@@ -486,6 +486,43 @@ export default function MobileVrPortal({ lang, setLang, onSwitchToDesktop }) {
                 </div>
               </div>
 
+              {/* Authentic Cambodian Tuk-Tuk 3D Preview Image */}
+              <div style={{
+                position: 'relative',
+                height: '140px',
+                borderRadius: '12px',
+                background: 'radial-gradient(circle at center, rgba(34, 197, 94, 0.22) 0%, rgba(10, 15, 30, 0.95) 75%)',
+                border: '1px solid rgba(34, 197, 94, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src="/images/cambodian_tuktuk.png"
+                  alt="Cambodian Tuk-Tuk VR Vehicle"
+                  style={{
+                    maxHeight: '125px',
+                    width: 'auto',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6))'
+                  }}
+                />
+                <span style={{
+                  position: 'absolute',
+                  bottom: '8px',
+                  right: '10px',
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  color: '#4ADE80',
+                  background: 'rgba(0, 0, 0, 0.7)',
+                  padding: '2px 8px',
+                  borderRadius: '6px'
+                }}>
+                  {sim.vehicle}
+                </span>
+              </div>
+
               {/* Description */}
               <p style={{ fontSize: '0.82rem', color: '#94A3B8', lineHeight: 1.5 }}>
                 {isKhmer ? sim.descKm : sim.descEn}

@@ -213,17 +213,49 @@ export default function SimulationHub({ lang, user, token, onProgressUpdated }) 
                     justifyContent: 'center'
                   }}>
                     {isClean ? (
-                      /* Clean City Graphic Card */
-                      <div style={{ textAlign: 'center', padding: '20px' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '6px' }}>
-                          {sim.type === 'cleancity_tuktuk' ? '🛺' : '🚲'}
+                      /* Clean City Graphic Card with Authentic 3D Tuk-Tuk Render */
+                      <div style={{ 
+                        position: 'relative', 
+                        width: '100%', 
+                        height: '100%', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        background: 'radial-gradient(circle at center, rgba(34, 197, 94, 0.22) 0%, rgba(15, 23, 42, 0.95) 75%)',
+                        padding: '12px'
+                      }}>
+                        <img
+                          src="/images/cambodian_tuktuk.png"
+                          alt="Cambodian Tuk-Tuk 3D Model"
+                          style={{
+                            maxHeight: '170px',
+                            maxWidth: '90%',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.65))',
+                            transition: 'transform 0.3s ease'
+                          }}
+                        />
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '10px',
+                          left: '12px',
+                          right: '12px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          background: 'rgba(10, 15, 30, 0.75)',
+                          backdropFilter: 'blur(8px)',
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(34, 197, 94, 0.3)'
+                        }}>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#4ADE80' }}>
+                            {sim.location || 'Phnom Penh'}
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: '#CBD5E1', fontWeight: 600 }}>
+                            {sim.vehicle || 'Tuk-Tuk Eco Express'}
+                          </span>
                         </div>
-                        <span style={{ fontSize: '1rem', fontWeight: 800, color: '#4ADE80', display: 'block' }}>
-                          {sim.location || 'Phnom Penh'}
-                        </span>
-                        <span style={{ fontSize: '0.78rem', color: '#A7F3D0' }}>
-                          {sim.vehicle || 'Eco Vehicle'}
-                        </span>
                       </div>
                     ) : (
                       <img
