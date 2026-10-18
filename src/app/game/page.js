@@ -103,6 +103,27 @@ export default function DedicatedGamePage() {
             <span>{isKhmer ? 'ពេញអេក្រង់' : 'Fullscreen'}</span>
           </button>
 
+          <a
+            href="/games/cleancity/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              background: 'rgba(255, 107, 0, 0.15)',
+              color: '#FF8A33',
+              border: '1px solid rgba(255, 107, 0, 0.3)',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              textDecoration: 'none'
+            }}
+          >
+            <span>📱 {isKhmer ? 'បើកផ្ទាល់' : 'Direct View'}</span>
+          </a>
+
           <button
             onClick={() => setLang(lang === 'km' ? 'en' : 'km')}
             style={{

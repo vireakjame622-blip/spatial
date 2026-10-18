@@ -257,18 +257,19 @@ export default function CleanCityGameSection({ lang }) {
                   gap: '6px',
                   padding: '8px 14px',
                   borderRadius: '10px',
-                  background: 'rgba(255, 107, 0, 0.15)',
+                  background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.2) 0%, rgba(255, 107, 0, 0.35) 100%)',
                   color: '#FF8A33',
-                  border: '1px solid rgba(255, 107, 0, 0.3)',
+                  border: '1px solid rgba(255, 107, 0, 0.5)',
                   fontSize: '0.82rem',
-                  fontWeight: 600,
+                  fontWeight: 700,
                   textDecoration: 'none',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  boxShadow: '0 0 12px rgba(255, 107, 0, 0.2)'
                 }}
-                title={isKhmer ? 'បើកក្នុង Tab ថ្មី' : 'Open in New Tab'}
+                title={isKhmer ? 'បើកលេងពេញអេក្រង់លើទូរស័ព្ទ (Full Mobile Screen)' : 'Play Fullscreen with Touch Controls'}
               >
                 <ExternalLink size={14} />
-                <span>{isKhmer ? 'Tab ថ្មី' : 'Direct Link'}</span>
+                <span>{isKhmer ? '📱 បើកពេញអេក្រង់លើទូរស័ព្ទ' : '📱 Mobile Fullscreen'}</span>
               </a>
             </div>
           </div>
