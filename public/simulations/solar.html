@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Solar System 3D Orbit & Telemetry — Spatial VR</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #020612; color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    #canvas-container {
+      width: 100%; height: 100%; display: flex; position: absolute; left: 0; top: 0;
+    }
+    .viewport {
+      flex: 1; height: 100%; position: relative; overflow: hidden;
+    }
+    canvas {
+      width: 100%; height: 100%; display: block;
+    }
+    .hud-overlay {
+      position: absolute; top: 12px; left: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+      padding: 12px 16px; border-radius: 14px;
+      border: 1px solid rgba(255, 107, 0, 0.3);
+      max-width: 320px;
+    }
+    .hud-title {
+      font-size: 1rem; font-weight: 800; color: #FF8A33; margin-bottom: 4px;
+    }
+    .hud-sub {
+      font-size: 0.76rem; color: #94A3B8; line-height: 1.4;
+    }
+    .hud-controls {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; z-index: 20; flex-wrap: wrap; justify-content: center;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+      padding: 8px 14px; border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #E2E8F0; padding: 6px 12px; border-radius: 8px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+    .hud-btn:hover, .hud-btn.active {
+      background: #FF6B00; color: #FFF; border-color: #FF8A33;
+    }
+    .planet-info-panel {
+      position: absolute; top: 12px; right: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      min-width: 200px; font-size: 0.8rem;
+    }
+    .vr-split-divider {
+      width: 2px; height: 100%; background: #FF6B00; z-index: 30; display: none;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div id="canvas-container">
+    <div id="view-left" class="viewport">
+      <canvas id="c-left"></canvas>
+    </div>
+    <div id="vr-divider" class="vr-split-divider"></div>
+    <div id="view-right" class="viewport" style="display: none;">
+      <canvas id="c-right"></canvas>
+    </div>
+  </div>
+
+  <div class="hud-overlay">
+    <div class="hud-title">🪐 Solar System 3D Orbit</div>
+    <div class="hud-sub">
+      គន្លងតារាវិថីនៃប្រព័ន្ធព្រះអាទិត្យ 3D • CADT Spatial VR<br>
+      Drag to rotate 360° • Pinch / Scroll to zoom
+    </div>
+  </div>
+
+  <div class="planet-info-panel" id="planet-panel">
+    <div style="font-weight: 800; color: #38BDF8; font-size: 0.95rem; margin-bottom: 6px;" id="p-name">Earth (ផែនដី)</div>
+    <div style="color: #94A3B8; line-height: 1.5;" id="p-details">
+      Dist: 1.00 AU (149.6M km)<br>
+      Orbit: 365.25 Days<br>
+      Radius: 6,371 km<br>
+      Moons: 1 (The Moon)
+    </div>
+  </div>
+
+  <div class="hud-controls">
+    <button class="hud-btn" id="btn-vr">🥽 VR Dual-Eye: OFF</button>
+    <button class="hud-btn active" id="btn-speed-1x">1x Speed</button>
+    <button class="hud-btn" id="btn-speed-3x">3x Speed</button>
+    <button class="hud-btn" id="btn-speed-10x">10x Speed</button>
+    <button class="hud-btn" id="btn-reset">🔄 Reset View</button>
+  </div>
+
+  <script>
+    let isVr = false;
+    let simSpeed = 1.0;
+    let scene, rendererLeft, rendererRight, cameraLeft, cameraRight;
+    const cLeft = document.getElementById('c-left');
+    const cRight = document.getElementById('c-right');
+    const viewRight = document.getElementById('view-right');
+    const vrDivider = document.getElementById('vr-divider');
+
+    // Create scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020612);
+
+    // Starfield Background
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 2000;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starPos[i] = (Math.random() - 0.5) * 1200;
+      starPos[i+1] = (Math.random() - 0.5) * 1200;
+      starPos[i+2] = (Math.random() - 0.5) * 1200;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0xFFFFFF, size: 1.2, transparent: true, opacity: 0.8 });
+    const stars = new THREE.Points(starGeo, starMat);
+    scene.add(stars);
+
+    // Ambient and Sun Light
+    const ambientLight = new THREE.AmbientLight(0x334155, 1.2);
+    scene.add(ambientLight);
+    const sunLight = new THREE.PointLight(0xFFFFFF, 2.5, 600);
+    scene.add(sunLight);
+
+    // Sun
+    const sunGeo = new THREE.SphereGeometry(14, 32, 32);
+    const sunMat = new THREE.MeshBasicMaterial({ color: 0xFDB813 });
+    const sun = new THREE.Mesh(sunGeo, sunMat);
+    scene.add(sun);
+
+    // Sun Glow Halo
+    const glowGeo = new THREE.SphereGeometry(16.5, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0xFFA500, transparent: true, opacity: 0.35, side: THREE.BackSide });
+    const sunGlow = new THREE.Mesh(glowGeo, glowMat);
+    scene.add(sunGlow);
+
+    // Planets Definition
+    const planetsData = [
+      { nameEn: 'Mercury', nameKm: 'ភពពុធ', dist: 28, size: 2.2, color: 0x9E9E9E, speed: 0.04, orbitDays: '88 Days', radius: '2,440 km', desc: 'Closest planet to Sun' },
+      { nameEn: 'Venus', nameKm: 'ភពសុក្រ', dist: 42, size: 3.8, color: 0xE6C280, speed: 0.025, orbitDays: '225 Days', radius: '6,052 km', desc: 'Hottest planet (465°C)' },
+      { nameEn: 'Earth', nameKm: 'ផែនដី', dist: 58, size: 4.0, color: 0x228BE6, speed: 0.018, orbitDays: '365.25 Days', radius: '6,371 km', desc: 'Home to all known life' },
+      { nameEn: 'Mars', nameKm: 'ភពអង្គារ', dist: 76, size: 2.8, color: 0xEF4444, speed: 0.014, orbitDays: '687 Days', radius: '3,390 km', desc: 'The Red Planet' },
+      { nameEn: 'Jupiter', nameKm: 'ភពព្រហស្បតិ៍', dist: 104, size: 8.5, color: 0xD97706, speed: 0.009, orbitDays: '12 Years', radius: '69,911 km', desc: 'Largest gas giant' },
+      { nameEn: 'Saturn', nameKm: 'ភពសៅរ៍', dist: 138, size: 7.0, color: 0xFBBF24, speed: 0.006, orbitDays: '29 Years', radius: '58,232 km', ring: true, desc: 'Majestic ice rings' },
+      { nameEn: 'Uranus', nameKm: 'ភពអ៊ុយរ៉ានុស', dist: 172, size: 5.0, color: 0x38BDF8, speed: 0.004, orbitDays: '84 Years', radius: '25,362 km', desc: 'Ice giant rotating sideways' },
+      { nameEn: 'Neptune', nameKm: 'ភពណិបទូន', dist: 204, size: 4.8, color: 0x3B82F6, speed: 0.003, orbitDays: '165 Years', radius: '24,622 km', desc: 'Supersonic wind storm world' }
+    ];
+
+    const planets = [];
+
+    planetsData.forEach((pd, idx) => {
+      // Orbit Ring line
+      const orbitGeo = new THREE.RingGeometry(pd.dist - 0.2, pd.dist + 0.2, 96);
+      const orbitMat = new THREE.MeshBasicMaterial({ color: 0x334155, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+      const orbitMesh = new THREE.Mesh(orbitGeo, orbitMat);
+      orbitMesh.rotation.x = Math.PI / 2;
+      scene.add(orbitMesh);
+
+      // Planet Mesh
+      const pGeo = new THREE.SphereGeometry(pd.size, 24, 24);
+      const pMat = new THREE.MeshStandardMaterial({ color: pd.color, roughness: 0.7, metalness: 0.1 });
+      const pMesh = new THREE.Mesh(pGeo, pMat);
+      pMesh.castShadow = true;
+      pMesh.receiveShadow = true;
+
+      // Saturn Rings
+      if (pd.ring) {
+        const ringGeo = new THREE.RingGeometry(pd.size * 1.4, pd.size * 2.3, 48);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xFDE68A, side: THREE.DoubleSide, transparent: true, opacity: 0.65 });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.rotation.x = Math.PI / 2.3;
+        pMesh.add(ringMesh);
+      }
+
+      scene.add(pMesh);
+      planets.push({
+        data: pd,
+        mesh: pMesh,
+        angle: (idx * Math.PI) / 4
+      });
+    });
+
+    // Cameras
+    cameraLeft = new THREE.PerspectiveCamera(50, 1, 1, 2000);
+    cameraRight = new THREE.PerspectiveCamera(50, 1, 1, 2000);
+
+    let camRadius = 160;
+    let camTheta = 0.8;
+    let camPhi = 0.9;
+
+    function updateCameraPos() {
+      const x = camRadius * Math.sin(camPhi) * Math.sin(camTheta);
+      const y = camRadius * Math.cos(camPhi);
+      const z = camRadius * Math.sin(camPhi) * Math.cos(camTheta);
+
+      cameraLeft.position.set(x, y, z);
+      cameraLeft.lookAt(0, 0, 0);
+
+      // Dual-eye IPD offset (interpupillary distance for stereo Cardboard VR)
+      const ipdOffset = 1.6;
+      cameraRight.position.set(x + ipdOffset, y, z);
+      cameraRight.lookAt(0, 0, 0);
+    }
+    updateCameraPos();
+
+    // Renderers
+    rendererLeft = new THREE.WebGLRenderer({ canvas: cLeft, antialias: true });
+    rendererLeft.setSize(cLeft.clientWidth, cLeft.clientHeight);
+    rendererLeft.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    rendererRight = new THREE.WebGLRenderer({ canvas: cRight, antialias: true });
+    rendererRight.setSize(cRight.clientWidth, cRight.clientHeight);
+    rendererRight.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    function onResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (isVr) {
+        const halfW = w / 2;
+        rendererLeft.setSize(halfW, h);
+        rendererRight.setSize(halfW, h);
+        cameraLeft.aspect = halfW / h;
+        cameraRight.aspect = halfW / h;
+      } else {
+        rendererLeft.setSize(w, h);
+        cameraLeft.aspect = w / h;
+      }
+      cameraLeft.updateProjectionMatrix();
+      cameraRight.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+    onResize();
+
+    // Mouse & Touch Controls
+    let isDragging = false;
+    let prevMouseX = 0;
+    let prevMouseY = 0;
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.hud-controls') || e.target.closest('.hud-overlay') || e.target.closest('.planet-info-panel')) return;
+      isDragging = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevMouseX;
+      const dy = e.clientY - prevMouseY;
+      camTheta -= dx * 0.007;
+      camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi - dy * 0.007));
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+      updateCameraPos();
+    });
+
+    window.addEventListener('pointerup', () => isDragging = false);
+    window.addEventListener('pointercancel', () => isDragging = false);
+
+    window.addEventListener('wheel', (e) => {
+      camRadius = Math.max(40, Math.min(320, camRadius + e.deltaY * 0.15));
+      updateCameraPos();
+    }, { passive: true });
+
+    // VR Toggle
+    const btnVr = document.getElementById('btn-vr');
+    btnVr.onclick = () => {
+      isVr = !isVr;
+      if (isVr) {
+        viewRight.style.display = 'block';
+        vrDivider.style.display = 'block';
+        btnVr.textContent = '🥽 VR Dual-Eye: ON';
+        btnVr.classList.add('active');
+      } else {
+        viewRight.style.display = 'none';
+        vrDivider.style.display = 'none';
+        btnVr.textContent = '🥽 VR Dual-Eye: OFF';
+        btnVr.classList.remove('active');
+      }
+      onResize();
+    };
+
+    // Speed Controls
+    const s1 = document.getElementById('btn-speed-1x');
+    const s3 = document.getElementById('btn-speed-3x');
+    const s10 = document.getElementById('btn-speed-10x');
+
+    s1.onclick = () => { simSpeed = 1.0; [s1, s3, s10].forEach(b => b.classList.remove('active')); s1.classList.add('active'); };
+    s3.onclick = () => { simSpeed = 3.0; [s1, s3, s10].forEach(b => b.classList.remove('active')); s3.classList.add('active'); };
+    s10.onclick = () => { simSpeed = 10.0; [s1, s3, s10].forEach(b => b.classList.remove('active')); s10.classList.add('active'); };
+
+    document.getElementById('btn-reset').onclick = () => {
+      camRadius = 160; camTheta = 0.8; camPhi = 0.9;
+      updateCameraPos();
+    };
+
+    // Cycle Planet Info
+    let currPIdx = 2; // Earth
+    setInterval(() => {
+      currPIdx = (currPIdx + 1) % planetsData.length;
+      const pd = planetsData[currPIdx];
+      document.getElementById('p-name').textContent = `${pd.nameEn} (${pd.nameKm})`;
+      document.getElementById('p-details').innerHTML = `
+        Dist: ${pd.dist} units<br>
+        Orbit: ${pd.orbitDays}<br>
+        Radius: ${pd.radius}<br>
+        Info: ${pd.desc}
+      `;
+    }, 4000);
+
+    // Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Rotate planets along orbits
+      planets.forEach(p => {
+        p.angle += p.data.speed * 0.5 * simSpeed;
+        p.mesh.position.x = Math.cos(p.angle) * p.data.dist;
+        p.mesh.position.z = Math.sin(p.angle) * p.data.dist;
+        p.mesh.rotation.y += 0.02 * simSpeed;
+      });
+
+      // Sun slow pulse
+      sun.rotation.y += 0.003;
+      sunGlow.rotation.y -= 0.002;
+
+      // Render Left Eye
+      rendererLeft.render(scene, cameraLeft);
+
+      // Render Right Eye (if VR enabled)
+      if (isVr) {
+        rendererRight.render(scene, cameraRight);
+      }
+    }
+    animate();
+  </script>
+</body>
+</html>

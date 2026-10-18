@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Mars Rover Teleoperation & Terrain 3D — Spatial VR</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #020612; color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    #canvas-container {
+      width: 100%; height: 100%; display: flex; position: absolute; left: 0; top: 0;
+    }
+    .viewport { flex: 1; height: 100%; position: relative; overflow: hidden; }
+    canvas { width: 100%; height: 100%; display: block; }
+    .hud-overlay {
+      position: absolute; top: 12px; left: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+      padding: 12px 16px; border-radius: 14px;
+      border: 1px solid rgba(249, 115, 22, 0.3); max-width: 340px;
+    }
+    .hud-title { font-size: 1rem; font-weight: 800; color: #FB923C; margin-bottom: 4px; }
+    .hud-sub { font-size: 0.76rem; color: #94A3B8; line-height: 1.4; }
+    .hud-controls {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; z-index: 20; flex-wrap: wrap; justify-content: center;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+      padding: 8px 14px; border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #E2E8F0; padding: 6px 12px; border-radius: 8px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+    .hud-btn:hover, .hud-btn.active {
+      background: #EA580C; color: #FFF; border-color: #FB923C;
+    }
+    .rover-panel {
+      position: absolute; top: 12px; right: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 14px;
+      border: 1px solid rgba(251, 146, 60, 0.3); min-width: 220px; font-size: 0.8rem;
+    }
+    .vr-split-divider { width: 2px; height: 100%; background: #EA580C; z-index: 30; display: none; }
+    
+    /* On-Screen Mobile D-Pad */
+    #mobile-dpad {
+      position: absolute; bottom: 70px; left: 20px; z-index: 25;
+      display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px);
+      gap: 6px;
+    }
+    .ctrl-key {
+      background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFF; font-weight: bold; border-radius: 10px; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .ctrl-key:active { background: #EA580C; transform: scale(0.92); }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div id="canvas-container">
+    <div id="view-left" class="viewport"><canvas id="c-left"></canvas></div>
+    <div id="vr-divider" class="vr-split-divider"></div>
+    <div id="view-right" class="viewport" style="display: none;"><canvas id="c-right"></canvas></div>
+  </div>
+
+  <div class="hud-overlay">
+    <div class="hud-title">🚀 Mars Rover Teleoperation</div>
+    <div class="hud-sub">
+      ការបញ្ជាយានរុករកភពអង្គារ & ផែនទីដីភពអង្គារ (Jezero Crater)<br>
+      Drive with W/A/S/D or On-Screen buttons • Collect 4 Samples!
+    </div>
+  </div>
+
+  <div class="rover-panel">
+    <div style="font-weight: 800; color: #FB923C; font-size: 0.95rem; margin-bottom: 6px;">Telemetry Feed</div>
+    <div style="color: #CBD5E1; line-height: 1.55;">
+      Samples: <span id="val-samples" style="color: #4ADE80; font-weight: 800;">0 / 4</span><br>
+      Battery: <span id="val-battery" style="color: #38BDF8; font-weight: 800;">98% Solar</span><br>
+      Position: <span id="val-pos" style="color: #FFF;">X: 0.0, Z: 0.0</span><br>
+      Speed: <span id="val-speed" style="color: #FBBF24;">0.0 km/h</span>
+    </div>
+  </div>
+
+  <!-- On-Screen D-Pad for Mobile -->
+  <div id="mobile-dpad">
+    <div></div>
+    <button class="ctrl-key" id="btn-up">▲</button>
+    <div></div>
+    <button class="ctrl-key" id="btn-left">◀</button>
+    <div></div>
+    <button class="ctrl-key" id="btn-right">▶</button>
+    <div></div>
+    <button class="ctrl-key" id="btn-down">▼</button>
+    <div></div>
+  </div>
+
+  <div class="hud-controls">
+    <button class="hud-btn" id="btn-vr">🥽 VR Dual-Eye: OFF</button>
+    <button class="hud-btn active" id="btn-view-chase">Chase Cam</button>
+    <button class="hud-btn" id="btn-view-orbit">Free Orbit</button>
+    <button class="hud-btn" id="btn-reset">🔄 Reset Rover</button>
+  </div>
+
+  <script>
+    let isVr = false;
+    let cameraMode = 'chase'; // 'chase' or 'orbit'
+    let samplesCollected = 0;
+
+    let scene, rendererLeft, rendererRight, cameraLeft, cameraRight;
+    const cLeft = document.getElementById('c-left');
+    const cRight = document.getElementById('c-right');
+    const viewRight = document.getElementById('view-right');
+    const vrDivider = document.getElementById('vr-divider');
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x3B1408);
+    scene.fog = new THREE.FogExp2(0x3B1408, 0.008);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0x78350F, 1.5));
+    const sunLight = new THREE.DirectionalLight(0xFED7AA, 2.2);
+    sunLight.position.set(40, 60, 30);
+    scene.add(sunLight);
+
+    // Martian Terrain (Displaced Plane)
+    const terrainGeo = new THREE.PlaneGeometry(240, 240, 64, 64);
+    terrainGeo.rotateX(-Math.PI / 2);
+    const pos = terrainGeo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const vx = pos.getX(i);
+      const vz = pos.getZ(i);
+      const height = Math.sin(vx * 0.05) * Math.cos(vz * 0.05) * 3.5 +
+                     Math.sin(vx * 0.12) * 1.5;
+      pos.setY(i, height);
+    }
+    terrainGeo.computeVertexNormals();
+
+    const terrainMat = new THREE.MeshStandardMaterial({
+      color: 0x9A3412,
+      roughness: 0.9,
+      metalness: 0.1,
+      flatShading: true
+    });
+    const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+    terrain.position.y = -1;
+    scene.add(terrain);
+
+    // Rover Vehicle Group
+    const rover = new THREE.Group();
+    scene.add(rover);
+
+    // Rover Chassis Body
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xF1F5F9, metalness: 0.4, roughness: 0.3 });
+    const chassis = new THREE.Mesh(new THREE.BoxGeometry(4.0, 1.8, 6.0), bodyMat);
+    chassis.position.y = 2.0;
+    rover.add(chassis);
+
+    // Solar Panel (Top)
+    const solarMat = new THREE.MeshStandardMaterial({ color: 0x1E3A8A, roughness: 0.2, metalness: 0.6 });
+    const solar = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.2, 5.0), solarMat);
+    solar.position.y = 3.0;
+    rover.add(solar);
+
+    // Mast & Camera MastCam
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3.5), bodyMat);
+    mast.position.set(1.2, 4.2, 2.0);
+    rover.add(mast);
+    const mastCam = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.6, 0.8), new THREE.MeshBasicMaterial({ color: 0x0F172A }));
+    mastCam.position.set(1.2, 5.8, 2.0);
+    rover.add(mastCam);
+
+    // 6 Wheels
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.7 });
+    const wheelGeo = new THREE.CylinderGeometry(0.9, 0.9, 0.8, 16);
+    wheelGeo.rotateZ(Math.PI / 2);
+
+    const wheelOffsets = [
+      [-2.3, 0.9, 2.2], [2.3, 0.9, 2.2],
+      [-2.3, 0.9, 0.0], [2.3, 0.9, 0.0],
+      [-2.3, 0.9, -2.2], [2.3, 0.9, -2.2]
+    ];
+    wheelOffsets.forEach(([wx, wy, wz]) => {
+      const w = new THREE.Mesh(wheelGeo, wheelMat);
+      w.position.set(wx, wy, wz);
+      rover.add(w);
+    });
+
+    // Collectible Rock Samples (Canisters)
+    const sampleCans = [];
+    const canGeo = new THREE.CylinderGeometry(0.8, 0.8, 1.6, 16);
+    const canMat = new THREE.MeshStandardMaterial({ color: 0x38BDF8, emissive: 0x0284C7, metalness: 0.8 });
+
+    const sampleLocations = [
+      [15, 12], [-20, 24], [25, -30], [-18, -25]
+    ];
+    sampleLocations.forEach(([sx, sz], idx) => {
+      const can = new THREE.Mesh(canGeo, canMat);
+      can.position.set(sx, 1.2, sz);
+      scene.add(can);
+      sampleCans.push({ mesh: can, collected: false });
+    });
+
+    // Cameras
+    cameraLeft = new THREE.PerspectiveCamera(50, 1, 0.5, 500);
+    cameraRight = new THREE.PerspectiveCamera(50, 1, 0.5, 500);
+
+    let roverX = 0, roverZ = 0, roverRot = 0, roverSpeed = 0;
+    let keys = { w: false, s: false, a: false, d: false };
+
+    // Keyboard handlers
+    window.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || e.code === 'ArrowUp') keys.w = true;
+      if (k === 's' || e.code === 'ArrowDown') keys.s = true;
+      if (k === 'a' || e.code === 'ArrowLeft') keys.a = true;
+      if (k === 'd' || e.code === 'ArrowRight') keys.d = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || e.code === 'ArrowUp') keys.w = false;
+      if (k === 's' || e.code === 'ArrowDown') keys.s = false;
+      if (k === 'a' || e.code === 'ArrowLeft') keys.a = false;
+      if (k === 'd' || e.code === 'ArrowRight') keys.d = false;
+    });
+
+    // Virtual Buttons
+    function bindBtn(id, dir) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const setKey = (v) => (e) => { e.preventDefault(); keys[dir] = v; };
+      el.addEventListener('pointerdown', setKey(true));
+      el.addEventListener('pointerup', setKey(false));
+      el.addEventListener('pointerleave', setKey(false));
+      el.addEventListener('touchstart', setKey(true));
+      el.addEventListener('touchend', setKey(false));
+    }
+    bindBtn('btn-up', 'w');
+    bindBtn('btn-down', 's');
+    bindBtn('btn-left', 'a');
+    bindBtn('btn-right', 'd');
+
+    // Renderers
+    rendererLeft = new THREE.WebGLRenderer({ canvas: cLeft, antialias: true });
+    rendererLeft.setSize(cLeft.clientWidth, cLeft.clientHeight);
+    rendererLeft.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    rendererRight = new THREE.WebGLRenderer({ canvas: cRight, antialias: true });
+    rendererRight.setSize(cRight.clientWidth, cRight.clientHeight);
+    rendererRight.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    function onResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (isVr) {
+        const halfW = w / 2;
+        rendererLeft.setSize(halfW, h);
+        rendererRight.setSize(halfW, h);
+        cameraLeft.aspect = halfW / h;
+        cameraRight.aspect = halfW / h;
+      } else {
+        rendererLeft.setSize(w, h);
+        cameraLeft.aspect = w / h;
+      }
+      cameraLeft.updateProjectionMatrix();
+      cameraRight.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+    onResize();
+
+    // Toolbar Buttons
+    const btnVr = document.getElementById('btn-vr');
+    btnVr.onclick = () => {
+      isVr = !isVr;
+      if (isVr) {
+        viewRight.style.display = 'block';
+        vrDivider.style.display = 'block';
+        btnVr.textContent = '🥽 VR Dual-Eye: ON';
+        btnVr.classList.add('active');
+      } else {
+        viewRight.style.display = 'none';
+        vrDivider.style.display = 'none';
+        btnVr.textContent = '🥽 VR Dual-Eye: OFF';
+        btnVr.classList.remove('active');
+      }
+      onResize();
+    };
+
+    const bChase = document.getElementById('btn-view-chase');
+    const bOrbit = document.getElementById('btn-view-orbit');
+    bChase.onclick = () => { cameraMode = 'chase'; bChase.classList.add('active'); bOrbit.classList.remove('active'); };
+    bOrbit.onclick = () => { cameraMode = 'orbit'; bOrbit.classList.add('active'); bChase.classList.remove('active'); };
+
+    document.getElementById('btn-reset').onclick = () => {
+      roverX = 0; roverZ = 0; roverRot = 0; roverSpeed = 0;
+    };
+
+    // Main Update & Render Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Rover Physics & Steering
+      if (keys.w) roverSpeed = Math.min(0.35, roverSpeed + 0.02);
+      else if (keys.s) roverSpeed = Math.max(-0.2, roverSpeed - 0.02);
+      else roverSpeed *= 0.9;
+
+      if (keys.a) roverRot += 0.035;
+      if (keys.d) roverRot -= 0.035;
+
+      roverX += Math.sin(roverRot) * roverSpeed;
+      roverZ += Math.cos(roverRot) * roverSpeed;
+
+      rover.position.set(roverX, 0, roverZ);
+      rover.rotation.y = roverRot;
+
+      // Sample Collection Check
+      sampleCans.forEach(can => {
+        if (!can.collected) {
+          can.mesh.rotation.y += 0.02;
+          const dist = Math.hypot(roverX - can.mesh.position.x, roverZ - can.mesh.position.z);
+          if (dist < 4.0) {
+            can.collected = true;
+            can.mesh.visible = false;
+            samplesCollected++;
+            document.getElementById('val-samples').textContent = `${samplesCollected} / 4`;
+            if (samplesCollected === 4) {
+              alert("🎉 Mission Accomplished! All 4 Martian Rock Samples Collected!");
+            }
+          }
+        }
+      });
+
+      // Update Telemetry Display
+      document.getElementById('val-pos').textContent = `X: ${roverX.toFixed(1)}, Z: ${roverZ.toFixed(1)}`;
+      document.getElementById('val-speed').textContent = `${(Math.abs(roverSpeed) * 20).toFixed(1)} km/h`;
+
+      // Camera Positioning
+      if (cameraMode === 'chase') {
+        const camDist = 18;
+        const camHeight = 8;
+        const cx = roverX - Math.sin(roverRot) * camDist;
+        const cz = roverZ - Math.cos(roverRot) * camDist;
+        cameraLeft.position.set(cx, camHeight, cz);
+        cameraLeft.lookAt(roverX, 2.5, roverZ);
+
+        const ipd = 1.0;
+        cameraRight.position.set(cx + ipd, camHeight, cz);
+        cameraRight.lookAt(roverX, 2.5, roverZ);
+      } else {
+        cameraLeft.position.set(roverX + 25, 20, roverZ + 25);
+        cameraLeft.lookAt(roverX, 2, roverZ);
+
+        cameraRight.position.set(roverX + 26, 20, roverZ + 25);
+        cameraRight.lookAt(roverX, 2, roverZ);
+      }
+
+      rendererLeft.render(scene, cameraLeft);
+      if (isVr) {
+        rendererRight.render(scene, cameraRight);
+      }
+    }
+    animate();
+  </script>
+</body>
+</html>

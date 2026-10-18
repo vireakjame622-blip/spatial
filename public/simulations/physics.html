@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Physics & Gravity Pendulum Lab — Spatial VR</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #020612; color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    #canvas-container {
+      width: 100%; height: 100%; display: flex; position: absolute; left: 0; top: 0;
+    }
+    .viewport { flex: 1; height: 100%; position: relative; overflow: hidden; }
+    canvas { width: 100%; height: 100%; display: block; }
+    .hud-overlay {
+      position: absolute; top: 12px; left: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+      padding: 12px 16px; border-radius: 14px;
+      border: 1px solid rgba(168, 85, 247, 0.3); max-width: 320px;
+    }
+    .hud-title { font-size: 1rem; font-weight: 800; color: #C084FC; margin-bottom: 4px; }
+    .hud-sub { font-size: 0.76rem; color: #94A3B8; line-height: 1.4; }
+    .hud-controls {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; z-index: 20; flex-wrap: wrap; justify-content: center;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+      padding: 8px 14px; border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #E2E8F0; padding: 6px 12px; border-radius: 8px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+    .hud-btn:hover, .hud-btn.active {
+      background: #A855F7; color: #FFF; border-color: #C084FC;
+    }
+    .physics-panel {
+      position: absolute; top: 12px; right: 14px; z-index: 20;
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 14px;
+      border: 1px solid rgba(192, 132, 252, 0.3); min-width: 220px; font-size: 0.8rem;
+    }
+    .meter-bar {
+      height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.1);
+      margin: 4px 0 10px 0; overflow: hidden;
+    }
+    .meter-fill-ke { height: 100%; width: 50%; background: #22C55E; transition: width 0.05s linear; }
+    .meter-fill-pe { height: 100%; width: 50%; background: #3B82F6; transition: width 0.05s linear; }
+    .vr-split-divider { width: 2px; height: 100%; background: #A855F7; z-index: 30; display: none; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div id="canvas-container">
+    <div id="view-left" class="viewport"><canvas id="c-left"></canvas></div>
+    <div id="vr-divider" class="vr-split-divider"></div>
+    <div id="view-right" class="viewport" style="display: none;"><canvas id="c-right"></canvas></div>
+  </div>
+
+  <div class="hud-overlay">
+    <div class="hud-title">⚡ Kinetic & Gravity Pendulum</div>
+    <div class="hud-sub">
+      បន្ទប់ពិសោធន៍រូបវិទ្យា៖ លំយោលប៉ោល & សន្ទុះចលនា<br>
+      Drag pendulum or orbit around lab in 3D
+    </div>
+  </div>
+
+  <div class="physics-panel">
+    <div style="font-weight: 800; color: #C084FC; font-size: 0.95rem; margin-bottom: 8px;">Live Energy Telemetry</div>
+    <div>Kinetic Energy (ស៊ីនេទិច): <span id="val-ke" style="color: #4ADE80; font-weight: bold;">0.0 J</span></div>
+    <div class="meter-bar"><div class="meter-fill-ke" id="bar-ke"></div></div>
+
+    <div>Potential Energy (ប៉ូតង់ស្យែល): <span id="val-pe" style="color: #60A5FA; font-weight: bold;">0.0 J</span></div>
+    <div class="meter-bar"><div class="meter-fill-pe" id="bar-pe"></div></div>
+
+    <div style="font-size: 0.74rem; color: #94A3B8; margin-top: 6px;">
+      Gravity (g): <span id="lbl-g" style="color: #FFF; font-weight: bold;">9.81 m/s² (Earth)</span><br>
+      Period (T): <span id="lbl-t" style="color: #FFF; font-weight: bold;">2.01 s</span>
+    </div>
+  </div>
+
+  <div class="hud-controls">
+    <button class="hud-btn" id="btn-vr">🥽 VR Dual-Eye: OFF</button>
+    <button class="hud-btn active" id="btn-earth">🌍 Earth (9.8 m/s²)</button>
+    <button class="hud-btn" id="btn-moon">🌙 Moon (1.6 m/s²)</button>
+    <button class="hud-btn" id="btn-jupiter">🪐 Jupiter (24.7 m/s²)</button>
+    <button class="hud-btn" id="btn-push">🖐️ Push Pendulum</button>
+  </div>
+
+  <script>
+    let isVr = false;
+    let g = 9.81;
+    let length = 18;
+    let theta = 0.8;
+    let omega = 0.0;
+    let damping = 0.9992;
+
+    let scene, rendererLeft, rendererRight, cameraLeft, cameraRight;
+    const cLeft = document.getElementById('c-left');
+    const cRight = document.getElementById('c-right');
+    const viewRight = document.getElementById('view-right');
+    const vrDivider = document.getElementById('vr-divider');
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x070B18);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0x475569, 1.2));
+    const light = new THREE.PointLight(0xFFFFFF, 2.0, 200);
+    light.position.set(10, 30, 20);
+    scene.add(light);
+
+    // Lab Grid Floor
+    const grid = new THREE.GridHelper(80, 40, 0x9333EA, 0x1E293B);
+    grid.position.y = -22;
+    scene.add(grid);
+
+    // Support Stand
+    const standMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8, roughness: 0.2 });
+    const beamGeo = new THREE.CylinderGeometry(0.8, 0.8, 30, 16);
+    const topBeam = new THREE.Mesh(beamGeo, standMat);
+    topBeam.rotation.z = Math.PI / 2;
+    topBeam.position.set(0, 15, 0);
+    scene.add(topBeam);
+
+    const postGeo = new THREE.CylinderGeometry(0.8, 0.8, 38, 16);
+    const postLeft = new THREE.Mesh(postGeo, standMat);
+    postLeft.position.set(-14, -4, 0);
+    scene.add(postLeft);
+
+    const postRight = new THREE.Mesh(postGeo, standMat);
+    postRight.position.set(14, -4, 0);
+    scene.add(postRight);
+
+    // Pendulum Group (pivots at 0, 15, 0)
+    const pendulum = new THREE.Group();
+    pendulum.position.set(0, 15, 0);
+    scene.add(pendulum);
+
+    // String
+    const stringGeo = new THREE.CylinderGeometry(0.12, 0.12, length, 8);
+    stringGeo.translate(0, -length / 2, 0);
+    const stringMat = new THREE.MeshBasicMaterial({ color: 0xE2E8F0 });
+    const stringMesh = new THREE.Mesh(stringGeo, stringMat);
+    pendulum.add(stringMesh);
+
+    // Bob (Weight sphere)
+    const bobGeo = new THREE.SphereGeometry(3.2, 32, 32);
+    const bobMat = new THREE.MeshStandardMaterial({ color: 0xC084FC, metalness: 0.85, roughness: 0.15 });
+    const bobMesh = new THREE.Mesh(bobGeo, bobMat);
+    bobMesh.position.set(0, -length, 0);
+    pendulum.add(bobMesh);
+
+    // Cameras
+    cameraLeft = new THREE.PerspectiveCamera(45, 1, 1, 1000);
+    cameraRight = new THREE.PerspectiveCamera(45, 1, 1, 1000);
+
+    let camRadius = 55;
+    let camTheta = 0.5;
+    let camPhi = 1.3;
+
+    function updateCameraPos() {
+      const x = camRadius * Math.sin(camPhi) * Math.sin(camTheta);
+      const y = camRadius * Math.cos(camPhi);
+      const z = camRadius * Math.sin(camPhi) * Math.cos(camTheta);
+
+      cameraLeft.position.set(x, y, z);
+      cameraLeft.lookAt(0, 0, 0);
+
+      const ipdOffset = 1.2;
+      cameraRight.position.set(x + ipdOffset, y, z);
+      cameraRight.lookAt(0, 0, 0);
+    }
+    updateCameraPos();
+
+    // Renderers
+    rendererLeft = new THREE.WebGLRenderer({ canvas: cLeft, antialias: true });
+    rendererLeft.setSize(cLeft.clientWidth, cLeft.clientHeight);
+    rendererLeft.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    rendererRight = new THREE.WebGLRenderer({ canvas: cRight, antialias: true });
+    rendererRight.setSize(cRight.clientWidth, cRight.clientHeight);
+    rendererRight.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    function onResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (isVr) {
+        const halfW = w / 2;
+        rendererLeft.setSize(halfW, h);
+        rendererRight.setSize(halfW, h);
+        cameraLeft.aspect = halfW / h;
+        cameraRight.aspect = halfW / h;
+      } else {
+        rendererLeft.setSize(w, h);
+        cameraLeft.aspect = w / h;
+      }
+      cameraLeft.updateProjectionMatrix();
+      cameraRight.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+    onResize();
+
+    // Mouse / Touch Drag to Orbit
+    let isDragging = false;
+    let prevMouseX = 0, prevMouseY = 0;
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.hud-controls') || e.target.closest('.hud-overlay') || e.target.closest('.physics-panel')) return;
+      isDragging = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevMouseX;
+      const dy = e.clientY - prevMouseY;
+      camTheta -= dx * 0.008;
+      camPhi = Math.max(0.2, Math.min(Math.PI - 0.2, camPhi - dy * 0.008));
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+      updateCameraPos();
+    });
+
+    window.addEventListener('pointerup', () => isDragging = false);
+    window.addEventListener('pointercancel', () => isDragging = false);
+
+    window.addEventListener('wheel', (e) => {
+      camRadius = Math.max(25, Math.min(100, camRadius + e.deltaY * 0.1));
+      updateCameraPos();
+    }, { passive: true });
+
+    // Buttons
+    const btnVr = document.getElementById('btn-vr');
+    btnVr.onclick = () => {
+      isVr = !isVr;
+      if (isVr) {
+        viewRight.style.display = 'block';
+        vrDivider.style.display = 'block';
+        btnVr.textContent = '🥽 VR Dual-Eye: ON';
+        btnVr.classList.add('active');
+      } else {
+        viewRight.style.display = 'none';
+        vrDivider.style.display = 'none';
+        btnVr.textContent = '🥽 VR Dual-Eye: OFF';
+        btnVr.classList.remove('active');
+      }
+      onResize();
+    };
+
+    const bE = document.getElementById('btn-earth');
+    const bM = document.getElementById('btn-moon');
+    const bJ = document.getElementById('btn-jupiter');
+
+    bE.onclick = () => { g = 9.81; document.getElementById('lbl-g').textContent = '9.81 m/s² (Earth)'; [bE, bM, bJ].forEach(b => b.classList.remove('active')); bE.classList.add('active'); };
+    bM.onclick = () => { g = 1.62; document.getElementById('lbl-g').textContent = '1.62 m/s² (Moon)'; [bE, bM, bJ].forEach(b => b.classList.remove('active')); bM.classList.add('active'); };
+    bJ.onclick = () => { g = 24.79; document.getElementById('lbl-g').textContent = '24.79 m/s² (Jupiter)'; [bE, bM, bJ].forEach(b => b.classList.remove('active')); bJ.classList.add('active'); };
+
+    document.getElementById('btn-push').onclick = () => {
+      omega += 0.8;
+    };
+
+    // Physics Loop (Runge-Kutta / Verlet simulation of nonlinear pendulum)
+    const dt = 0.02;
+    const mass = 2.0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Angular acceleration: alpha = - (g / L) * sin(theta)
+      const alpha = -(g / length) * Math.sin(theta);
+      omega += alpha * dt;
+      omega *= damping;
+      theta += omega * dt;
+
+      pendulum.rotation.z = theta;
+
+      // Energy calculation
+      const h = length * (1 - Math.cos(theta));
+      const pe = mass * g * h;
+      const v = length * omega;
+      const ke = 0.5 * mass * v * v;
+      const total = pe + ke || 1;
+
+      document.getElementById('val-ke').textContent = ke.toFixed(1) + ' J';
+      document.getElementById('val-pe').textContent = pe.toFixed(1) + ' J';
+      document.getElementById('bar-ke').style.width = Math.min(100, (ke / total) * 100) + '%';
+      document.getElementById('bar-pe').style.width = Math.min(100, (pe / total) * 100) + '%';
+
+      // Period estimate
+      const T = (2 * Math.PI * Math.sqrt(length / g)).toFixed(2);
+      document.getElementById('lbl-t').textContent = T + ' s';
+
+      rendererLeft.render(scene, cameraLeft);
+      if (isVr) {
+        rendererRight.render(scene, cameraRight);
+      }
+    }
+    animate();
+  </script>
+</body>
+</html>

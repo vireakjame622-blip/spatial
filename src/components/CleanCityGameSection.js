@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 import { 
   Play, 
   Maximize2, 
@@ -247,6 +248,29 @@ export default function CleanCityGameSection({ lang }) {
                 <span>{isKhmer ? 'ពេញអេក្រង់ (Fullscreen)' : 'Fullscreen'}</span>
               </button>
 
+              <Link
+                href="/game"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  color: '#38BDF8',
+                  border: '1px solid rgba(56, 189, 248, 0.35)',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 0 12px rgba(56, 189, 248, 0.15)'
+                }}
+                title={isKhmer ? 'បើកផ្ទាំងលេងធំទូលាយ (Dedicated Game Page)' : 'Open Dedicated Game Page'}
+              >
+                <ExternalLink size={14} />
+                <span>{isKhmer ? '🎮 ផ្ទាំងលេងធំទូលាយ' : '🎮 Dedicated Page'}</span>
+              </Link>
+
               <a
                 href="/games/cleancity/index.html"
                 target="_blank"
@@ -266,10 +290,10 @@ export default function CleanCityGameSection({ lang }) {
                   transition: 'all 0.2s',
                   boxShadow: '0 0 12px rgba(255, 107, 0, 0.2)'
                 }}
-                title={isKhmer ? 'បើកលេងពេញអេក្រង់លើទូរស័ព្ទ (Full Mobile Screen)' : 'Play Fullscreen with Touch Controls'}
+                title={isKhmer ? 'បើកលេងផ្ទាល់ក្នុង Tab ថ្មី (Standalone Direct Build)' : 'Open Standalone WebGL Build'}
               >
                 <ExternalLink size={14} />
-                <span>{isKhmer ? '📱 បើកពេញអេក្រង់លើទូរស័ព្ទ' : '📱 Mobile Fullscreen'}</span>
+                <span>{isKhmer ? '📱 Standalone Tab' : '📱 Standalone Tab'}</span>
               </a>
             </div>
           </div>

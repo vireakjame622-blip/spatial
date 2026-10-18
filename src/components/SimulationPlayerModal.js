@@ -43,6 +43,16 @@ export default function SimulationPlayerModal({
   const [controllerConnected, setControllerConnected] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Automatically load the simulation's gameUrl whenever simulation changes
+  useEffect(() => {
+    const url = simulation.gameUrl || '';
+    if (url) {
+      setRealGameUrl(url);
+      setInputUrl(url);
+      setIsGameRunning(true);
+    }
+  }, [simulation.id, simulation.gameUrl]);
+
   // Monitor physical or BLE gamepad
   useEffect(() => {
     let animId;
@@ -234,62 +244,13 @@ export default function SimulationPlayerModal({
             position: 'relative',
             display: 'flex'
           }}>
-            {/* If VR Stereo is active, render dual-viewport side-by-side */}
-            {vrStereoMode ? (
-              <div style={{ display: 'flex', width: '100%', height: '100%', position: 'relative' }}>
-                {/* Left Eye */}
-                <div style={{ flex: 1, height: '100%', borderRight: '2px solid #FF6B00', position: 'relative' }}>
-                  <iframe
-                    src={realGameUrl}
-                    title="Real Game Left Eye"
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    allow="accelerometer; gyroscope; gamepad; xr-spatial-tracking; fullscreen"
-                  />
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    left: '12px',
-                    background: 'rgba(0,0,0,0.6)',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    color: '#00F0FF'
-                  }}>
-                    L-Eye (42mm)
-                  </div>
-                </div>
-
-                {/* Right Eye */}
-                <div style={{ flex: 1, height: '100%', position: 'relative' }}>
-                  <iframe
-                    src={realGameUrl}
-                    title="Real Game Right Eye"
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    allow="accelerometer; gyroscope; gamepad; xr-spatial-tracking; fullscreen"
-                  />
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    right: '12px',
-                    background: 'rgba(0,0,0,0.6)',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    color: '#00F0FF'
-                  }}>
-                    R-Eye (42mm)
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Single Full Screen Real Game */
-              <iframe
-                src={realGameUrl}
-                title="Real Game Frame"
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                allow="accelerometer; gyroscope; gamepad; xr-spatial-tracking; fullscreen"
-              />
-            )}
+            {/* Optimized Single Responsive 3D Canvas / WebGL Frame */}
+            <iframe
+              src={realGameUrl}
+              title={simulation.title || "Real 3D Simulation Frame"}
+              style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+              allow="accelerometer; gyroscope; gamepad; xr-spatial-tracking; fullscreen; autoplay; clipboard-write"
+            />
 
             {/* Floating Switch/Change URL Overlay */}
             <div style={{
