@@ -1,0 +1,45 @@
+# Netlify Configuration for Spatial Next.js & Unity WebGL
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  GIT_LFS_ENABLED = "true"
+  NODE_VERSION = "20"
+  NEXT_USE_NETLIFY_EDGE = "false"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Proper MIME types and caching headers for Unity WebGL
+[[headers]]
+  for = "/games/cleancity/Build/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/games/cleancity/Build/*.data"
+  [headers.values]
+    Content-Type = "application/octet-stream"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/games/cleancity/Build/*.framework.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/games/cleancity/Build/*.loader.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Permissions policy for VR and Sensor APIs inside iframes
+[[headers]]
+  for = "/games/cleancity/*"
+  [headers.values]
+    Permissions-Policy = "accelerometer=*, gyroscope=*, gamepad=*, xr-spatial-tracking=*"
+    X-Frame-Options = "SAMEORIGIN"
