@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Maximize2, RotateCcw, Glasses, Globe, Sparkles } from 'lucide-react';
+import ProjectSoftwareSection from '@/components/ProjectSoftwareSection';
 
 export default function DedicatedGamePage() {
   const [lang, setLang] = useState('en');
@@ -230,6 +231,9 @@ export default function DedicatedGamePage() {
             <span style={{ padding: '3px 8px', borderRadius: '6px', background: '#DBEAFE', color: '#1E40AF', fontWeight: 600 }}>+50 Pts at Depot</span>
           </div>
         </div>
+
+        {/* Project Software Screenshots Section */}
+        <ProjectSoftwareSection lang={lang} />
       </main>
     </div>
   );

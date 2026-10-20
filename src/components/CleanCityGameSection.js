@@ -18,7 +18,8 @@ import {
   Info,
   Keyboard,
   Car,
-  Recycle
+  Recycle,
+  Camera
 } from 'lucide-react';
 
 const kbdStyle = {
@@ -325,6 +326,29 @@ export default function CleanCityGameSection({ lang }) {
               >
                 <ExternalLink size={14} />
                 <span>{isKhmer ? 'Standalone Tab' : 'Standalone Tab'}</span>
+              </a>
+
+              <a
+                href="#project-software"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  background: 'rgba(34, 197, 94, 0.15)',
+                  color: '#4ADE80',
+                  border: '1px solid rgba(34, 197, 94, 0.4)',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 0 12px rgba(34, 197, 94, 0.15)'
+                }}
+                title={isKhmer ? 'ទស្សនារូបភាពសូហ្វវែរគម្រោង (Software Screenshots)' : 'View Project Software Screenshots'}
+              >
+                <Camera size={14} />
+                <span>{isKhmer ? 'រូបភាពសូហ្វវែរ' : 'Software Gallery'}</span>
               </a>
             </div>
           </div>

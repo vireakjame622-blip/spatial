@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Circle, Bookmark, Award, Glasses, Cpu, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
+import { CheckCircle2, Circle, Bookmark, Award, Glasses, Cpu, ShieldCheck, Sparkles, Wrench, GraduationCap, Rocket } from 'lucide-react';
 
 export default function StudentDashboard({ lang }) {
   const isKhmer = lang === 'km';
@@ -242,6 +242,9 @@ export default function StudentDashboard({ lang }) {
               </h3>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                   padding: '10px 14px',
                   borderRadius: '10px',
                   background: progressPercent >= 40 ? 'rgba(255, 107, 0, 0.08)' : '#F8FAFC',
@@ -250,9 +253,13 @@ export default function StudentDashboard({ lang }) {
                   fontWeight: 600,
                   color: progressPercent >= 40 ? '#FF6B00' : '#94A3B8'
                 }}>
-                  🎓 VR Pioneer
+                  <GraduationCap size={15} />
+                  <span>VR Pioneer</span>
                 </div>
                 <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                   padding: '10px 14px',
                   borderRadius: '10px',
                   background: progressPercent >= 60 ? 'rgba(2, 132, 199, 0.08)' : '#F8FAFC',
@@ -261,9 +268,13 @@ export default function StudentDashboard({ lang }) {
                   fontWeight: 600,
                   color: progressPercent >= 60 ? '#0284C7' : '#94A3B8'
                 }}>
-                  🛠️ Cardboard Craftsman
+                  <Wrench size={15} />
+                  <span>Cardboard Craftsman</span>
                 </div>
                 <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                   padding: '10px 14px',
                   borderRadius: '10px',
                   background: progressPercent === 100 ? 'rgba(139, 92, 246, 0.08)' : '#F8FAFC',
@@ -272,7 +283,8 @@ export default function StudentDashboard({ lang }) {
                   fontWeight: 600,
                   color: progressPercent === 100 ? '#7C3AED' : '#94A3B8'
                 }}>
-                  🚀 3D VR Explorer
+                  <Rocket size={15} />
+                  <span>3D VR Explorer</span>
                 </div>
               </div>
             </div>

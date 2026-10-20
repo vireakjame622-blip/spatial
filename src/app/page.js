@@ -12,6 +12,7 @@ import DiyMakerLab from '@/components/DiyMakerLab';
 import StudentDashboard from '@/components/StudentDashboard';
 import BlueprintDownloadsSection from '@/components/BlueprintDownloadsSection';
 import CleanCityGameSection from '@/components/CleanCityGameSection';
+import ProjectSoftwareSection from '@/components/ProjectSoftwareSection';
 import OurImpactSection from '@/components/OurImpactSection';
 import UserExperienceSection from '@/components/UserExperienceSection';
 import MobileVrPortal from '@/components/MobileVrPortal';
@@ -126,6 +127,9 @@ export default function Home() {
 
         {/* 2. Live 3D Unity WebGL Game Showcase (Clean Air Cambodia) — Prominently Positioned */}
         <CleanCityGameSection lang={lang} />
+
+        {/* 2.1 Our Project Software Screenshots Showcase (Custom-Built Unity 3D & VR Software) */}
+        <ProjectSoftwareSection lang={lang} />
 
         {/* 3. Problem Statement (Price Barrier, Passive 2D Learning, Digital Divide) */}
         <ProblemStatementSection lang={lang} />

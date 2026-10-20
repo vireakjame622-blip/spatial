@@ -1,233 +1,237 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Clean Air Cambodia — Phnom Penh 3D VR Simulation</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Clean Air Cambodia — Phnom Penh 3D VR Simulation</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <style>
     <style>
-    <style>
-      /* Clean, unobtrusive Canvas */
-      #unity-container {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        background: #000;
-        overflow: hidden;
-      }
-      #unity-canvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="unity-container">
-      <canvas id="unity-canvas" tabindex="-1"></canvas>
 
-      <!-- Modern High-Tech Loading Screen -->
-      <div id="unity-loading-bar">
-        <div class="loading-badge">
-          PHNOM PENH METROPOLIS • CENTRAL MARKET
-        </div>
-        <h2 class="loading-title">Clean Air Cambodia 3D</h2>
-        <p class="loading-subtitle">Official Unity 6 WebGL Simulation • CADT Spatial VR</p>
+    /* Clean, unobtrusive Canvas */
+    #unity-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+    }
 
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
 
-        <div class="loading-stats">
-          <span id="loading-mb-text">Connecting to 3D Engine...</span>
-          <span id="loading-pct-text" style="color: #4ADE80;">0%</span>
-        </div>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
 
-        <div class="loading-hint">
-          <div style="font-weight: 700; color: #4ADE80; margin-bottom: 4px;" id="hint-title">
-            Mission Tip / គន្លឹះបេសកកម្ម:
-          </div>
-          <div id="hint-body" style="font-size: 0.76rem; color: #E2E8F0; line-height: 1.45;">
-            Drive the Tuk-Tuk or ride the Eco-Bicycle to collect street waste, sort into 5 color-coded bins, and extinguish PM2.5 smog fires!
-          </div>
-        </div>
+    <!-- Modern High-Tech Loading Screen -->
+    <div id="unity-loading-bar">
+      <div class="loading-badge">
+        PHNOM PENH METROPOLIS • CENTRAL MARKET
+      </div>
+      <h2 class="loading-title">Clean Air Cambodia 3D</h2>
+      <p class="loading-subtitle">Official Unity 6 WebGL Simulation • CADT Spatial VR</p>
+
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
       </div>
 
-      <!-- Non-blocking Warning / Toast -->
-      <div id="unity-warning"></div>
+      <div class="loading-stats">
+        <span id="loading-mb-text">Connecting to 3D Engine...</span>
+        <span id="loading-pct-text" style="color: #4ADE80;">0%</span>
+      </div>
+
+      <div class="loading-hint">
+        <div style="font-weight: 700; color: #4ADE80; margin-bottom: 4px;" id="hint-title">
+        </div>
+        <div id="hint-body" style="font-size: 0.76rem; color: #E2E8F0; line-height: 1.45;">
+          Drive the Tuk-Tuk or ride the Eco-Bicycle to collect street waste, sort into 5 color-coded bins, and
+          extinguish PM2.5 smog fires!
+        </div>
+      </div>
     </div>
 
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
-      var unityInst = null;
+    <!-- Non-blocking Warning / Toast -->
+    <div id="unity-warning"></div>
+  </div>
 
-      // Rotating Educational Tips
-      var tips = [
-        "Drive close to trash piles and press E or tap ACTION to collect litter into your Eco Tuk-Tuk cargo.",
-        "Sort items into 5 bins: Green (Organic), Yellow (Plastic), Blue (Recyclables), Grey (General), Red (Hazardous).",
-        "Extinguish open burning piles to eliminate toxic PM2.5 smog and restore Phnom Penh Air Quality to 100%!",
-        "ចុច E ឬប៊ូតុង ACTION ដើម្បីរើសសំរាមតាមដងផ្លូវជុំវិញផ្សារធំថ្មី!",
-        "ញែកសម្រាមឱ្យត្រូវពណ៌ដើម្បីទទួលបានពិន្ទុបន្ថែម (Combo Bonus Points)!"
-      ];
-      var tipIndex = 0;
-      setInterval(function() {
-        tipIndex = (tipIndex + 1) % tips.length;
-        var hintEl = document.getElementById("hint-body");
-        if (hintEl) hintEl.textContent = tips[tipIndex];
-      }, 4500);
+  <script>
+    var canvas = document.querySelector("#unity-canvas");
+    var unityInst = null;
 
-      // Warning Banner handler (filters minor non-fatal shader warnings)
-      function unityShowBanner(msg, type) {
-        if (typeof msg === 'string' && (
-          msg.includes('shader') || 
-          msg.includes('Parameter name: shader') ||
-          msg.includes('ArgumentNullException') ||
-          msg.includes('Material')
+    // Rotating Educational Tips
+    var tips = [
+      "Drive close to trash piles and press E or tap ACTION to collect litter into your Eco Tuk-Tuk cargo.",
+      "Sort items into 5 bins: Green (Organic), Yellow (Plastic), Blue (Recyclables), Grey (General), Red (Hazardous).",
+      "Extinguish open burning piles to eliminate toxic PM2.5 smog and restore Phnom Penh Air Quality to 100%!",
+    ];
+    var tipIndex = 0;
+    setInterval(function () {
+      tipIndex = (tipIndex + 1) % tips.length;
+
+      var hintEl = document.getElementById("hint-body");
+      if (hintEl) hintEl.textContent = tips[tipIndex];
+    }, 4500);
+
+    // Warning Banner handler (filters minor non-fatal shader warnings)
+    function unityShowBanner(msg, type) {
+      if (typeof msg === 'string' && (
+        msg.includes('shader') ||
+        msg.includes('Parameter name: shader') ||
+        msg.includes('ArgumentNullException') ||
+        msg.includes('Material')
+      )) {
+        console.warn("[CleanCity Unity Engine] Minor shader/material notice handled:", msg);
+        return; // Suppress disruptive alert
+      }
+
+      var warningBanner = document.querySelector("#unity-warning");
+      if (!warningBanner) return;
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') {
+        div.style = 'background: rgba(239, 68, 68, 0.95); color: #FFF; padding: 8px 12px; border-radius: 8px; margin: 4px 0;';
+      } else {
+        div.style = 'background: rgba(234, 179, 8, 0.95); color: #000; padding: 8px 12px; border-radius: 8px; margin: 4px 0;';
+      }
+      warningBanner.style.display = 'block';
+      setTimeout(function () {
+        if (div.parentNode) div.parentNode.removeChild(div);
+        if (warningBanner.children.length === 0) warningBanner.style.display = 'none';
+      }, 5000);
+    }
+
+    // Stable URLs to enable browser and IndexedDB Unity caching
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/cleancity.loader.js";
+    var config = {
+      arguments: [],
+      dataUrl: buildUrl + "/cleancity.data",
+      frameworkUrl: buildUrl + "/cleancity.framework.js",
+      codeUrl: buildUrl + "/cleancity.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "CADT_IDT",
+      productName: "CleanAirCambodia",
+      productVersion: "1.0.0",
+      showBanner: unityShowBanner,
+      errorHandler: function (message, filename, lineno) {
+        if (typeof message === 'string' && (
+          message.includes('shader') ||
+          message.includes('Parameter name: shader') ||
+          message.includes('ArgumentNullException') ||
+          message.includes('Material')
         )) {
-          console.warn("[CleanCity Unity Engine] Minor shader/material notice handled:", msg);
-          return; // Suppress disruptive alert
+          console.warn("[CleanCity Unity Engine] Shader null exception gracefully caught:", message);
+          return true; // Don't trigger browser alert popup
         }
-
-        var warningBanner = document.querySelector("#unity-warning");
-        if (!warningBanner) return;
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') {
-          div.style = 'background: rgba(239, 68, 68, 0.95); color: #FFF; padding: 8px 12px; border-radius: 8px; margin: 4px 0;';
-        } else {
-          div.style = 'background: rgba(234, 179, 8, 0.95); color: #000; padding: 8px 12px; border-radius: 8px; margin: 4px 0;';
-        }
-        warningBanner.style.display = 'block';
-        setTimeout(function() {
-          if (div.parentNode) div.parentNode.removeChild(div);
-          if (warningBanner.children.length === 0) warningBanner.style.display = 'none';
-        }, 5000);
+        console.error("[CleanCity Unity Error]", message, filename, lineno);
+        return false;
       }
+    };
 
-      // Stable URLs to enable browser and IndexedDB Unity caching
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/cleancity.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/cleancity.data",
-        frameworkUrl: buildUrl + "/cleancity.framework.js",
-        codeUrl: buildUrl + "/cleancity.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "CADT_IDT",
-        productName: "CleanAirCambodia",
-        productVersion: "1.0.0",
-        showBanner: unityShowBanner,
-        errorHandler: function(message, filename, lineno) {
-          if (typeof message === 'string' && (
-            message.includes('shader') ||
-            message.includes('Parameter name: shader') ||
-            message.includes('ArgumentNullException') ||
-            message.includes('Material')
-          )) {
-            console.warn("[CleanCity Unity Engine] Shader null exception gracefully caught:", message);
-            return true; // Don't trigger browser alert popup
-          }
-          console.error("[CleanCity Unity Error]", message, filename, lineno);
-          return false;
-        }
-      };
+    // Detect mobile or touch environment
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
 
-      // Detect mobile or touch environment
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                     (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+    if (isMobile) {
+      config.devicePixelRatio = 1; // Prevent GPU memory exhaustion
+    }
 
-      if (isMobile) {
-        config.devicePixelRatio = 1; // Prevent GPU memory exhaustion
-      }
+    // Auto-fit canvas to container
+    function fitCanvas() {
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+    }
+    window.addEventListener("resize", fitCanvas);
+    fitCanvas();
 
-      // Auto-fit canvas to container
-      function fitCanvas() {
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-      }
-      window.addEventListener("resize", fitCanvas);
-      fitCanvas();
-
-      // Dispatch synthetic keyboard events for controls
-      function triggerKey(key, code, keyCode, isDown) {
-        var eventType = isDown ? 'keydown' : 'keyup';
-        var evt = new KeyboardEvent(eventType, {
-          key: key,
-          code: code,
-          keyCode: keyCode,
-          which: keyCode,
-          bubbles: true,
-          cancelable: true
-        });
-        window.dispatchEvent(evt);
-        document.dispatchEvent(evt);
-        canvas.dispatchEvent(evt);
-      }
-
-      // Map Arrow keys & Spacebar to standard game keys for ease of use
-      window.addEventListener('keydown', function(e) {
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
-        if (e.code === 'ArrowUp' && !e.repeat) triggerKey('w', 'KeyW', 87, true);
-        if (e.code === 'ArrowDown' && !e.repeat) triggerKey('s', 'KeyS', 83, true);
-        if (e.code === 'ArrowLeft' && !e.repeat) triggerKey('a', 'KeyA', 65, true);
-        if (e.code === 'ArrowRight' && !e.repeat) triggerKey('d', 'KeyD', 68, true);
-        if (e.code === 'Space' && !e.repeat) triggerKey('e', 'KeyE', 69, true);
+    // Dispatch synthetic keyboard events for controls
+    function triggerKey(key, code, keyCode, isDown) {
+      var eventType = isDown ? 'keydown' : 'keyup';
+      var evt = new KeyboardEvent(eventType, {
+        key: key,
+        code: code,
+        keyCode: keyCode,
+        which: keyCode,
+        bubbles: true,
+        cancelable: true
       });
+      window.dispatchEvent(evt);
+      document.dispatchEvent(evt);
+      canvas.dispatchEvent(evt);
+    }
 
-      window.addEventListener('keyup', function(e) {
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
-        if (e.code === 'ArrowUp') triggerKey('w', 'KeyW', 87, false);
-        if (e.code === 'ArrowDown') triggerKey('s', 'KeyS', 83, false);
-        if (e.code === 'ArrowLeft') triggerKey('a', 'KeyA', 65, false);
-        if (e.code === 'ArrowRight') triggerKey('d', 'KeyD', 68, false);
-        if (e.code === 'Space') triggerKey('e', 'KeyE', 69, false);
-      });
+    // Map Arrow keys & Spacebar to standard game keys for ease of use
+    window.addEventListener('keydown', function (e) {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (e.code === 'ArrowUp' && !e.repeat) triggerKey('w', 'KeyW', 87, true);
+      if (e.code === 'ArrowDown' && !e.repeat) triggerKey('s', 'KeyS', 83, true);
+      if (e.code === 'ArrowLeft' && !e.repeat) triggerKey('a', 'KeyA', 65, true);
+      if (e.code === 'ArrowRight' && !e.repeat) triggerKey('d', 'KeyD', 68, true);
+      if (e.code === 'Space' && !e.repeat) triggerKey('e', 'KeyE', 69, true);
+    });
 
-      // Load Unity Instance
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = function() {
-        createUnityInstance(canvas, config, function(progress) {
-          var pct = Math.round(100 * progress);
-          var fullBar = document.querySelector("#unity-progress-bar-full");
-          if (fullBar) fullBar.style.width = pct + "%";
-          
-          var pctText = document.getElementById("loading-pct-text");
-          if (pctText) pctText.textContent = pct + "%";
+    window.addEventListener('keyup', function (e) {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (e.code === 'ArrowUp') triggerKey('w', 'KeyW', 87, false);
+      if (e.code === 'ArrowDown') triggerKey('s', 'KeyS', 83, false);
+      if (e.code === 'ArrowLeft') triggerKey('a', 'KeyA', 65, false);
+      if (e.code === 'ArrowRight') triggerKey('d', 'KeyD', 68, false);
+      if (e.code === 'Space') triggerKey('e', 'KeyE', 69, false);
+    });
 
-          var mbText = document.getElementById("loading-mb-text");
-          if (mbText) {
-            var loadedMb = (progress * 272).toFixed(1);
-            mbText.textContent = "Loading 3D City... " + loadedMb + " MB / 272 MB";
-          }
-        }).then(function(instance) {
-          unityInst = instance;
-          var loadingBar = document.querySelector("#unity-loading-bar");
-          if (loadingBar) {
-            loadingBar.style.opacity = "0";
-            loadingBar.style.transition = "opacity 0.5s ease-out";
-            setTimeout(function() { loadingBar.style.display = "none"; }, 500);
-          }
+    // Load Unity Instance
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = function () {
+      createUnityInstance(canvas, config, function (progress) {
+        var pct = Math.round(100 * progress);
+        var fullBar = document.querySelector("#unity-progress-bar-full");
+        if (fullBar) fullBar.style.width = pct + "%";
 
-          // Unmute audio on first interaction
-          function unlockAudio() {
-            window.removeEventListener('click', unlockAudio);
-            window.removeEventListener('touchstart', unlockAudio);
-          }
-          window.addEventListener('click', unlockAudio);
-          window.addEventListener('touchstart', unlockAudio);
+        var pctText = document.getElementById("loading-pct-text");
+        if (pctText) pctText.textContent = pct + "%";
 
-        }).catch(function(message) {
-          console.error("Unity WebGL Startup Error:", message);
-          var loadingBar = document.querySelector("#unity-loading-bar");
-          if (loadingBar) loadingBar.style.display = "none";
+        var mbText = document.getElementById("loading-mb-text");
+        if (mbText) {
+          var loadedMb = (progress * 272).toFixed(1);
+          mbText.textContent = "Loading 3D City... " + loadedMb + " MB / 272 MB";
+        }
+      }).then(function (instance) {
+        unityInst = instance;
+        var loadingBar = document.querySelector("#unity-loading-bar");
+        if (loadingBar) {
+          loadingBar.style.opacity = "0";
+          loadingBar.style.transition = "opacity 0.5s ease-out";
+          setTimeout(function () { loadingBar.style.display = "none"; }, 500);
+        }
 
-          var errDiv = document.createElement("div");
-          errDiv.style = "position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#0F172A; color:#FFFFFF; padding:28px 24px; border-radius:20px; border:2px solid #EF4444; max-width:92%; width:440px; box-shadow:0 25px 60px rgba(0,0,0,0.85); z-index:9999; text-align:center;";
-          errDiv.innerHTML = `
+        // Unmute audio on first interaction
+        function unlockAudio() {
+          window.removeEventListener('click', unlockAudio);
+          window.removeEventListener('touchstart', unlockAudio);
+        }
+        window.addEventListener('click', unlockAudio);
+        window.addEventListener('touchstart', unlockAudio);
+
+      }).catch(function (message) {
+        console.error("Unity WebGL Startup Error:", message);
+        var loadingBar = document.querySelector("#unity-loading-bar");
+        if (loadingBar) loadingBar.style.display = "none";
+
+        var errDiv = document.createElement("div");
+        errDiv.style = "position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#0F172A; color:#FFFFFF; padding:28px 24px; border-radius:20px; border:2px solid #EF4444; max-width:92%; width:440px; box-shadow:0 25px 60px rgba(0,0,0,0.85); z-index:9999; text-align:center;";
+        errDiv.innerHTML = `
             <h3 style="margin:0 0 10px; color:#F87171; font-size:1.2rem; font-weight:800;">Memory or WebGL Notice</h3>
             <p style="font-size:0.86rem; color:#CBD5E1; line-height:1.55; margin-bottom:18px;">
               This high-fidelity 3D simulation includes a full 226MB Phnom Penh city model.
@@ -244,25 +248,26 @@
               Dedicated Player
             </a>
           `;
-          document.body.appendChild(errDiv);
-        });
-      };
-      document.body.appendChild(script);
+        document.body.appendChild(errDiv);
+      });
+    };
+    document.body.appendChild(script);
 
-      // Safe Fullscreen API helper
-      window.requestUnityFullscreen = function() {
-        if (unityInst) {
-          unityInst.SetFullscreen(1);
+    // Safe Fullscreen API helper
+    window.requestUnityFullscreen = function () {
+      if (unityInst) {
+        unityInst.SetFullscreen(1);
+      } else {
+        var el = document.documentElement;
+        if (!document.fullscreenElement) {
+          if (el.requestFullscreen) el.requestFullscreen();
+          else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
         } else {
-          var el = document.documentElement;
-          if (!document.fullscreenElement) {
-            if (el.requestFullscreen) el.requestFullscreen();
-            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-          } else {
-            if (document.exitFullscreen) document.exitFullscreen();
-          }
+          if (document.exitFullscreen) document.exitFullscreen();
         }
-      };
-    </script>
-  </body>
+      }
+    };
+  </script>
+</body>
+
 </html>
