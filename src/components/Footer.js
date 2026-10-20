@@ -73,7 +73,7 @@ export default function Footer({ lang }) {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', color: '#94A3B8' }}>
               <li>{isKhmer ? 'អំពីគម្រោង SPATIAL' : 'About SPATIAL'}</li>
               <li>{isKhmer ? 'ល្បែងក្រុង Clean City 3D' : 'Clean City 3D Game'}</li>
-              <li>{isKhmer ? 'តារាងតម្លៃ $16 BOM' : '$16 Cost Breakdown'}</li>
+              <li>{isKhmer ? 'គ្រឿងបង្គុំទាំង ១១ មុខ' : '11 Hardware Components'}</li>
               <li>{isKhmer ? 'ផលជះសង្គម (Our Impact)' : 'Our Impact'}</li>
               <li>{isKhmer ? 'មន្ទីរពិសោធន៍ DIY Maker' : 'DIY Maker Lab'}</li>
               <li>{isKhmer ? 'ប្លង់កាត់ 1:1 & កូដ' : '1:1 Blueprints & Code'}</li>

@@ -145,7 +145,7 @@ export default function HeroSection({ lang, onBlueprintClick, onExploreSimulatio
                 boxShadow: '0 0 10px #22C55E',
                 display: 'inline-block'
               }} />
-              <span>{isKhmer ? '🎮 ហ្គេម 3D VR (ភ្នំពេញ) ដំណើរការផ្ទាល់លើ Website នេះ ↓' : '🎮 Live Unity 6 3D Game Ready to Play Below ↓'}</span>
+              <span>{isKhmer ? 'ហ្គេម 3D VR (ភ្នំពេញ) ដំណើរការផ្ទាល់លើ Website នេះ ↓' : 'Live Unity 6 3D Game Ready to Play Below ↓'}</span>
             </div>
 
             {/* Action Buttons */}

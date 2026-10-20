@@ -9,7 +9,7 @@ export const initialSimulations = [
     category: 'Clean City',
     categoryKhmer: 'ទីក្រុងស្អាត & បរិស្ថាន',
     description: 'Ride the Cambodian Eco Bicycle around Central Market. Sort street litter across 5 color-coded bins (Green, Yellow, Blue, Grey, Red), extinguish toxic open fires, and restore Air Quality from 32% to 100%!',
-    descriptionKhmer: 'ជិះកង់អេកូឡូស៊ីជុំវិញផ្សារធំថ្មី រើសសម្រាមតាមដងផ្លូវ ញែកចូលធុង ៥ ពណ៌ ពន្លត់ភ្លើងដុតសម្រាម ដើម្បីលុបបំបាត់ផ្សែងពុល PM2.5 និងស្តារគុណភាពខ្យល់ឱ្យដល់ ១០០%! 🇰🇭',
+    descriptionKhmer: 'ជិះកង់អេកូឡូស៊ីជុំវិញផ្សារធំថ្មី រើសសម្រាមតាមដងផ្លូវ ញែកចូលធុង ៥ ពណ៌ ពន្លត់ភ្លើងដុតសម្រាម ដើម្បីលុបបំបាត់ផ្សែងពុល PM2.5 និងស្តារគុណភាពខ្យល់ឱ្យដល់ ១០០%!',
     thumbnail: '/images/cambodian_tuktuk.png',
     gameUrl: '/games/cleancity/index.html',
     duration: '10 mins',

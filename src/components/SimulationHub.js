@@ -15,7 +15,7 @@ export default function SimulationHub({ lang, user, token, onProgressUpdated }) 
 
   const categories = [
     { id: 'All', labelEn: 'All Labs', labelKm: 'ទាំងអស់' },
-    { id: 'Clean City', labelEn: 'Clean City (Phnom Penh)', labelKm: 'ទីក្រុងស្អាត (ភ្នំពេញ) 🇰🇭' },
+    { id: 'Clean City', labelEn: 'Clean City (Phnom Penh)', labelKm: 'ទីក្រុងស្អាត (ភ្នំពេញ)' },
     { id: 'Astronomy', labelEn: 'Space & Astronomy', labelKm: 'តារាសាស្ត្រ' },
     { id: 'Anatomy', labelEn: 'Biology & Anatomy', labelKm: 'កាយវិភាគវិទ្យា' },
     { id: 'Physics', labelEn: 'Physics & Forces', labelKm: 'រូបវិទ្យា' },
@@ -366,7 +366,9 @@ export default function SimulationHub({ lang, user, token, onProgressUpdated }) 
                       }}>
                         <span style={{ color: '#4ADE80', fontWeight: 700 }}>✓ 5-Color Bins</span>
                         <span>•</span>
-                        <span style={{ color: '#F97316', fontWeight: 700 }}>🔥 Extinguish Smog</span>
+                        <span style={{ color: '#F97316', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                          <Flame size={12} /> Extinguish Smog
+                        </span>
                         <span>•</span>
                         <span style={{ color: '#00F0FF', fontWeight: 700 }}>100% Air Quality</span>
                       </div>

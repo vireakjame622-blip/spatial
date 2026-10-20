@@ -4,21 +4,21 @@ Welcome to **Spatial** — an ultra-accessible DIY Virtual Reality kit and inter
 
 ---
 
-## ✨ Features
+## Features
 
-- **🎮 Clean City 3D Interactive Quest**: Embedded Unity WebGL educational simulation playable directly in browser.
-- **💰 $16 Unit Cost Breakdown**: Complete 11-item Bill of Materials (BOM) with cost comparisons against high-end headsets.
-- **🌟 Our Impact**: 
+- **Clean City 3D Interactive Quest**: Embedded Unity WebGL educational simulation playable directly in browser.
+- **$16 Unit Cost Breakdown**: Complete 11-item Bill of Materials (BOM) with cost comparisons against high-end headsets.
+- **Our Impact**: 
   - **Massive Scalability**: Replaces 1 expensive headset with 25+ kits for an entire classroom.
   - **Deeper Spatial Learning**: Transforms static textbook concepts into interactive 3D models.
   - **Closing the Digital Divide**: Brings high-tech STEM education to underfunded and rural schools.
-- **🛠️ DIY Hands-On Maker Lab**: 1:1 scale printable blueprints, lens alignment guides, and open-source ESP32 firmware code.
-- **📱 Mobile VR Headset Mode**: Dual-lens split-screen stereoscopic portal for cardboard headsets.
-- **🌐 Bilingual Support**: Full instant switching between English and Khmer (ខ្មែរ).
+- **DIY Hands-On Maker Lab**: 1:1 scale printable blueprints, lens alignment guides, and open-source ESP32 firmware code.
+- **Mobile VR Headset Mode**: Dual-lens split-screen stereoscopic portal for cardboard headsets.
+- **Bilingual Support**: Full instant switching between English and Khmer (ខ្មែរ).
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Install Dependencies
 ```bash

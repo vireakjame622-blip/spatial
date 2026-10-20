@@ -12,16 +12,33 @@ import DiyMakerLab from '@/components/DiyMakerLab';
 import StudentDashboard from '@/components/StudentDashboard';
 import BlueprintDownloadsSection from '@/components/BlueprintDownloadsSection';
 import CleanCityGameSection from '@/components/CleanCityGameSection';
-import SimulationHub from '@/components/SimulationHub';
 import OurImpactSection from '@/components/OurImpactSection';
+import UserExperienceSection from '@/components/UserExperienceSection';
 import MobileVrPortal from '@/components/MobileVrPortal';
 import Footer from '@/components/Footer';
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState('hero');
-  const [lang, setLang] = useState('km'); // Default to Khmer
+  const [lang, setLang] = useState('en'); // Default to English
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [viewMode, setViewMode] = useState('auto'); // 'auto', 'mobile_vr', or 'desktop'
+
+  // Load user language preference if previously selected
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('spatial_lang');
+      if (savedLang === 'km' || savedLang === 'en') {
+        setLang(savedLang);
+      }
+    }
+  }, []);
+
+  const handleSetLang = (newLang) => {
+    setLang(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('spatial_lang', newLang);
+    }
+  };
 
   // Device auto-detection: checks screen width and mobile user-agent
   useEffect(() => {
@@ -46,8 +63,23 @@ export default function Home() {
     }
   }, [lang]);
 
+  // Check hash in URL on initial mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hashId = window.location.hash.replace('#', '');
+      if (hashId) {
+        setTimeout(() => {
+          scrollToSection(hashId);
+        }, 300);
+      }
+    }
+  }, []);
+
   const scrollToSection = (sectionId) => {
     setCurrentSection(sectionId);
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', `#${sectionId}`);
+    }
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -64,7 +96,7 @@ export default function Home() {
     return (
       <MobileVrPortal
         lang={lang}
-        setLang={setLang}
+        setLang={handleSetLang}
         onSwitchToDesktop={() => setViewMode('desktop')}
       />
     );
@@ -78,7 +110,7 @@ export default function Home() {
         currentSection={currentSection}
         onNavigate={scrollToSection}
         lang={lang}
-        setLang={setLang}
+        setLang={handleSetLang}
         onSwitchToMobileVr={() => setViewMode('mobile_vr')}
       />
 
@@ -95,9 +127,6 @@ export default function Home() {
         {/* 2. Live 3D Unity WebGL Game Showcase (Clean Air Cambodia) — Prominently Positioned */}
         <CleanCityGameSection lang={lang} />
 
-        {/* 2.1 Interactive 3D Curriculum & Simulation Hub (Solar, Heart, Physics, Mars Rover, Clean City) */}
-        <SimulationHub lang={lang} />
-
         {/* 3. Problem Statement (Price Barrier, Passive 2D Learning, Digital Divide) */}
         <ProblemStatementSection lang={lang} />
 
@@ -113,11 +142,14 @@ export default function Home() {
         {/* 4. Target Users (Resource-limited Schools, STEM Students, Interactive 3D Learners) */}
         <TargetUsersSection lang={lang} />
 
-        {/* 5. Official $16 Unit Cost Breakdown (11 items) & Comparison */}
+        {/* 5. Official Hardware Components (11 items) & Comparison */}
         <SpecsAndBomSection lang={lang} />
 
         {/* 5.1 Our Impact: Massive Scalability, Deeper Spatial Learning, Closing the Digital Divide */}
         <OurImpactSection lang={lang} />
+
+        {/* 5.15 Real Classroom & User Testing Experience (Interactive 3D Carousel) */}
+        <UserExperienceSection lang={lang} />
 
         {/* 5.2 Hands-On Maker Lab (Cutouts, Lens Alignment, ESP32 Code) */}
         <DiyMakerLab lang={lang} />

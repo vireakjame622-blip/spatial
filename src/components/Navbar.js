@@ -57,29 +57,30 @@ export default function Navbar({
         </div>
 
         {/* Clean Center Navigation (Desktop) */}
-        <nav className="desktop-nav">
+        <nav className="desktop-nav" style={{ gap: '4px' }}>
           {[
             { id: 'hero', labelEn: 'About', labelKm: 'អំពីគម្រោង' },
             { id: 'solution', labelEn: 'Solution', labelKm: 'ដំណោះស្រាយ' },
-            { id: 'clean-city-game', labelEn: 'Clean City 3D', labelKm: 'ល្បែងក្រុង 3D 🇰🇭' },
-            { id: 'simulations', labelEn: '3D Labs', labelKm: 'ពិសោធន៍ 3D' },
+            { id: 'clean-city-game', labelEn: 'Clean City', labelKm: 'ល្បែងក្រុង' },
             { id: 'how-it-works', labelEn: 'Hardware', labelKm: 'ផ្នែករឹង' },
-            { id: 'cost', labelEn: '$16 Cost', labelKm: 'តម្លៃ $16' },
+            { id: 'cost', labelEn: 'Components', labelKm: 'គ្រឿងបង្គុំ' },
             { id: 'impact', labelEn: 'Impact', labelKm: 'ផលជះ' },
-            { id: 'diy-section', labelEn: 'Maker Lab', labelKm: 'មន្ទីរពិសោធន៍ DIY' },
+            { id: 'user-experience', labelEn: 'Experience 3D', labelKm: 'បទពិសោធន៍ 3D' },
+            { id: 'diy-section', labelEn: 'Maker Lab', labelKm: 'មន្ទីរពិសោធន៍' },
             { id: 'blueprints', labelEn: 'Blueprints', labelKm: 'ប្លង់ 1:1' },
           ].map((item) => (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
               style={{
-                padding: '7px 11px',
+                padding: '6px 8px',
                 borderRadius: '8px',
-                fontSize: '0.84rem',
+                fontSize: '0.82rem',
                 fontWeight: currentSection === item.id ? 700 : 500,
                 color: currentSection === item.id ? '#FF6B00' : '#334155',
                 background: currentSection === item.id ? 'rgba(255, 107, 0, 0.08)' : 'transparent',
-                transition: 'all 0.15s ease'
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
               }}
             >
               {isKhmer ? item.labelKm : item.labelEn}
@@ -87,28 +88,53 @@ export default function Navbar({
           ))}
         </nav>
 
-        {/* Right Section: Language + Mobile VR Mode Switcher */}
+        {/* Right Section: Dual-Pill Language Switcher + Mobile VR Mode */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 
-          {/* Language Switch */}
-          <button
-            onClick={() => setLang(lang === 'en' ? 'km' : 'en')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '7px 10px',
-              borderRadius: '8px',
-              border: '1px solid #E2E8F0',
-              background: '#F8FAFC',
-              color: '#334155',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-            }}
-          >
-            <Globe size={14} color="#FF6B00" />
-            <span>{lang === 'en' ? 'ខ្មែរ' : 'EN'}</span>
-          </button>
+          {/* Explicit Dual-Language Toggle Pill (Khmer / English) */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#F1F5F9',
+            borderRadius: '10px',
+            padding: '3px',
+            border: '1px solid #E2E8F0'
+          }}>
+            <button
+              onClick={() => setLang('km')}
+              style={{
+                padding: '5px 9px',
+                borderRadius: '7px',
+                fontSize: '0.78rem',
+                fontWeight: lang === 'km' ? 800 : 600,
+                color: lang === 'km' ? '#FFFFFF' : '#64748B',
+                background: lang === 'km' ? '#FF6B00' : 'transparent',
+                boxShadow: lang === 'km' ? '0 2px 6px rgba(255, 107, 0, 0.3)' : 'none',
+                transition: 'all 0.15s ease',
+                cursor: 'pointer'
+              }}
+              title="ប្តូរទៅភាសាខ្មែរ"
+            >
+              ខ្មែរ
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              style={{
+                padding: '5px 9px',
+                borderRadius: '7px',
+                fontSize: '0.78rem',
+                fontWeight: lang === 'en' ? 800 : 600,
+                color: lang === 'en' ? '#FFFFFF' : '#64748B',
+                background: lang === 'en' ? '#FF6B00' : 'transparent',
+                boxShadow: lang === 'en' ? '0 2px 6px rgba(255, 107, 0, 0.3)' : 'none',
+                transition: 'all 0.15s ease',
+                cursor: 'pointer'
+              }}
+              title="Switch to English"
+            >
+              EN
+            </button>
+          </div>
 
           {/* Mobile Menu Hamburger Button */}
           <button
@@ -154,11 +180,11 @@ export default function Navbar({
           {[
             { id: 'hero', labelEn: 'About Spatial', labelKm: 'អំពីគម្រោង' },
             { id: 'solution', labelEn: 'Our Solution', labelKm: 'ដំណោះស្រាយ ៤ យ៉ាង' },
-            { id: 'clean-city-game', labelEn: 'Clean City 3D Quest', labelKm: 'ល្បែងក្រុង 3D 🇰🇭' },
-            { id: 'simulations', labelEn: 'Interactive 3D Labs', labelKm: 'ពិសោធន៍ 3D & VR' },
+            { id: 'clean-city-game', labelEn: 'Clean City 3D Quest', labelKm: 'ល្បែងក្រុង 3D' },
             { id: 'how-it-works', labelEn: 'Hardware Engineering', labelKm: 'ផ្នែករឹង (Hardware)' },
-            { id: 'cost', labelEn: '$16 Cost Breakdown', labelKm: 'តម្លៃ $16' },
+            { id: 'cost', labelEn: 'Hardware Components', labelKm: 'គ្រឿងបង្គុំផ្នែករឹង' },
             { id: 'impact', labelEn: 'Our Impact', labelKm: 'ផលជះសង្គម' },
+            { id: 'user-experience', labelEn: 'User Experience (3D)', labelKm: 'បទពិសោធន៍តេស្ត 3D' },
             { id: 'diy-section', labelEn: 'Hands-On Maker Lab', labelKm: 'មន្ទីរពិសោធន៍ DIY' },
             { id: 'student-dashboard', labelEn: 'DIY Tracker', labelKm: 'តារាងតាមដាន DIY' },
             { id: 'blueprints', labelEn: 'Blueprints & Code', labelKm: 'ប្លង់កាត់ & កូដ' },

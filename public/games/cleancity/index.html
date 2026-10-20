@@ -8,138 +8,19 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-      /* Virtual On-Screen Controller Styling */
-      #mobile-virtual-controls {
-        position: fixed;
-        bottom: 14px;
-        left: 0;
-        width: 100%;
-        pointer-events: none;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding: 0 16px;
-        box-sizing: border-box;
-      }
-
-      .virtual-ctrl-btn {
-        pointer-events: auto;
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: none;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-family: inherit;
-        transition: transform 0.08s ease, background 0.15s ease;
-      }
-
-      .virtual-ctrl-btn:active, .virtual-ctrl-btn.active {
-        transform: scale(0.92);
-        filter: brightness(1.25);
-      }
-
-      .dpad-container {
-        display: grid;
-        grid-template-columns: repeat(3, clamp(42px, 11vw, 54px));
-        grid-template-rows: repeat(3, clamp(42px, 11vw, 54px));
-        gap: 6px;
-        background: rgba(10, 15, 30, 0.65);
-        padding: 8px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      }
-
-      .dpad-btn {
-        background: rgba(30, 41, 59, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #FFFFFF;
-        font-weight: 800;
-        border-radius: 12px;
-        font-size: 1.15rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      }
-
-      .action-container {
-        display: flex;
-        gap: 12px;
-        align-items: flex-end;
-        background: rgba(10, 15, 30, 0.65);
-        padding: 8px 12px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      }
-
-      .btn-action-primary {
-        width: clamp(62px, 15vw, 76px);
-        height: clamp(62px, 15vw, 76px);
-        background: linear-gradient(135deg, #16A34A 0%, #22C55E 100%);
-        border: 2px solid #86EFAC;
-        color: #FFFFFF;
-        font-weight: 800;
-        border-radius: 50%;
-        font-size: 1.1rem;
-        box-shadow: 0 6px 18px rgba(34, 197, 94, 0.45);
-      }
-
-      .btn-action-secondary {
-        width: clamp(52px, 13vw, 62px);
-        height: clamp(52px, 13vw, 62px);
-        background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
-        border: 2px solid #FCA5A5;
-        color: #FFFFFF;
-        font-weight: 800;
-        border-radius: 50%;
-        font-size: 0.95rem;
-        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
-      }
-
-      /* Help Overlay Modal */
-      #help-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
+    <style>
+      /* Clean, unobtrusive Canvas */
+      #unity-container {
         width: 100%;
         height: 100%;
-        background: rgba(6, 11, 25, 0.88);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-        padding: 20px;
-        box-sizing: border-box;
+        position: relative;
+        background: #000;
+        overflow: hidden;
       }
-
-      .help-card {
-        background: #0F172A;
-        border: 1px solid rgba(34, 197, 94, 0.4);
-        border-radius: 20px;
-        max-width: 520px;
+      #unity-canvas {
         width: 100%;
-        padding: 24px 28px;
-        color: #F8FAFC;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(34, 197, 94, 0.15);
-      }
-
-      .help-key {
-        background: #1E293B;
-        padding: 3px 8px;
-        border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #38BDF8;
-        font-weight: 700;
-        font-size: 0.82rem;
+        height: 100%;
+        display: block;
       }
     </style>
   </head>
@@ -147,33 +28,10 @@
     <div id="unity-container">
       <canvas id="unity-canvas" tabindex="-1"></canvas>
 
-      <!-- Top In-Game Floating Toolbar -->
-      <div id="unity-top-toolbar">
-        <button id="toolbar-btn-help" class="unity-tool-btn" title="How to Play / របៀបលេង">
-          <span>❓</span>
-          <span>Help</span>
-        </button>
-
-        <button id="toolbar-btn-controls" class="unity-tool-btn" title="Toggle On-Screen Buttons">
-          <span>🎮</span>
-          <span id="ctrl-toggle-label">Controls: ON</span>
-        </button>
-
-        <button id="toolbar-btn-reload" class="unity-tool-btn" title="Restart Simulation">
-          <span>🔄</span>
-          <span>Restart</span>
-        </button>
-
-        <button id="toolbar-btn-fullscreen" class="unity-tool-btn" title="Toggle Fullscreen">
-          <span>⛶</span>
-          <span>Fullscreen</span>
-        </button>
-      </div>
-
       <!-- Modern High-Tech Loading Screen -->
       <div id="unity-loading-bar">
         <div class="loading-badge">
-          🇰🇭 PHNOM PENH METROPOLIS • CENTRAL MARKET
+          PHNOM PENH METROPOLIS • CENTRAL MARKET
         </div>
         <h2 class="loading-title">Clean Air Cambodia 3D</h2>
         <p class="loading-subtitle">Official Unity 6 WebGL Simulation • CADT Spatial VR</p>
@@ -189,7 +47,7 @@
 
         <div class="loading-hint">
           <div style="font-weight: 700; color: #4ADE80; margin-bottom: 4px;" id="hint-title">
-            💡 Mission Tip / គន្លឹះបេសកកម្ម:
+            Mission Tip / គន្លឹះបេសកកម្ម:
           </div>
           <div id="hint-body" style="font-size: 0.76rem; color: #E2E8F0; line-height: 1.45;">
             Drive the Tuk-Tuk or ride the Eco-Bicycle to collect street waste, sort into 5 color-coded bins, and extinguish PM2.5 smog fires!
@@ -199,92 +57,6 @@
 
       <!-- Non-blocking Warning / Toast -->
       <div id="unity-warning"></div>
-    </div>
-
-    <!-- On-Screen Virtual Controls for Touch & Mouse -->
-    <div id="mobile-virtual-controls">
-      <!-- Left D-Pad -->
-      <div class="dpad-container">
-        <div></div>
-        <button id="btn-up" class="virtual-ctrl-btn dpad-btn" title="Move Forward (W / Up Arrow)">▲</button>
-        <div></div>
-        <button id="btn-left" class="virtual-ctrl-btn dpad-btn" title="Steer Left (A / Left Arrow)">◀</button>
-        <div></div>
-        <button id="btn-right" class="virtual-ctrl-btn dpad-btn" title="Steer Right (D / Right Arrow)">▶</button>
-        <div></div>
-        <button id="btn-down" class="virtual-ctrl-btn dpad-btn" title="Reverse / Brake (S / Down Arrow)">▼</button>
-        <div></div>
-      </div>
-
-      <!-- Right Action Buttons -->
-      <div class="action-container">
-        <button id="btn-drop" class="virtual-ctrl-btn btn-action-secondary" title="Drop Trash into Bin (Q)">
-          <span>Q</span>
-          <span style="font-size: 0.6rem; opacity: 0.9;">DROP</span>
-        </button>
-
-        <button id="btn-act" class="virtual-ctrl-btn btn-action-primary" title="Pick Up / Action / Extinguish Fire (E / Space)">
-          <span>E</span>
-          <span style="font-size: 0.65rem; opacity: 0.95;">ACTION</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Help & Controls Modal -->
-    <div id="help-modal">
-      <div class="help-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #4ADE80;">
-            🎮 របៀបលេង / How to Play
-          </h3>
-          <button id="help-close-btn" style="background: rgba(255,255,255,0.1); border: none; color: #FFF; border-radius: 8px; width: 32px; height: 32px; font-weight: bold; cursor: pointer;">✕</button>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.84rem; line-height: 1.5;">
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
-            <span><span class="help-key">W, A, S, D</span> ឬ <span class="help-key">Arrow Keys</span></span>
-            <span style="color: #CBD5E1;">បើកបរកង់បី / ដើរ / Move / Drive</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
-            <span><span class="help-key">E</span> ឬ <span class="help-key">Space</span></span>
-            <span style="color: #4ADE80; font-weight: 700;">ឡើងជិះកង់បី / រើសសម្រាម / ពន្លត់ភ្លើង (Action)</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
-            <span><span class="help-key">H</span> និង <span class="help-key">V</span></span>
-            <span style="color: #FACC15; font-weight: 700;">[H] ស៊ីផ្លេកង់បី • [V] ប្តូរកាមេរ៉ាក្នុង/ក្រៅ</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
-            <span><span class="help-key">Q</span></span>
-            <span style="color: #F87171; font-weight: 700;">បោះសម្រាមចូលធុង (Drop)</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
-            <span><span class="help-key">Mouse Click & Drag</span></span>
-            <span style="color: #CBD5E1;">បង្វិលកាមេរ៉ាមើល 360° Look</span>
-          </div>
-
-          <div style="margin-top: 10px; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.35); padding: 12px; border-radius: 10px; font-size: 0.78rem;">
-            <div style="color: #4ADE80; font-weight: 800; margin-bottom: 4px;">🛺 យានរ៉ឺម៉កកង់បី (Kong Bey Eco Tuk-Tuk):</div>
-            <div style="color: #CBD5E1; line-height: 1.45;">
-              • ចូលជិតកង់បី ចុច <b style="color:#FFF;">[E]</b> ដើម្បីឡើងបើកបរ<br>
-              • ឃ្លាំងផ្ទុកសំរាមបាន <b style="color:#FACC15;">១០ មុខ</b> រួចដឹកទៅដេប៉ូកែច្នៃ (+50 PTS)<br>
-              • បាតអេក្រង់មានកុងទ័រល្បឿន និងចំនួនសំរាមក្នុងឃ្លាំង
-            </div>
-          </div>
-
-          <div style="margin-top: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); padding: 10px 12px; border-radius: 10px; font-size: 0.76rem;">
-            <div style="color: #38BDF8; font-weight: 700; margin-bottom: 4px;">♻️ ធុងសម្រាម ៥ ពណ៌ស្តង់ដារកម្ពុជា:</div>
-            <div>🟢 បៃតង (សរីរាង្គ) • 🟡 លឿង (ប្លាស្ទិក) • 🔵 ខៀវ (កែច្នៃ) • ⚪ ប្រផេះ (ទូទៅ) • 🔴 ក្រហម (គ្រោះថ្នាក់)</div>
-          </div>
-        </div>
-
-        <button id="help-ok-btn" style="width: 100%; margin-top: 18px; padding: 10px; border-radius: 10px; background: #16A34A; border: none; color: #FFF; font-weight: 700; cursor: pointer;">
-          យល់ព្រម (Got It!)
-        </button>
-      </div>
     </div>
 
     <script>
@@ -456,7 +228,6 @@
           var errDiv = document.createElement("div");
           errDiv.style = "position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#0F172A; color:#FFFFFF; padding:28px 24px; border-radius:20px; border:2px solid #EF4444; max-width:92%; width:440px; box-shadow:0 25px 60px rgba(0,0,0,0.85); z-index:9999; text-align:center;";
           errDiv.innerHTML = `
-            <div style="font-size:2.4rem; margin-bottom:10px;">⚠️</div>
             <h3 style="margin:0 0 10px; color:#F87171; font-size:1.2rem; font-weight:800;">Memory or WebGL Notice</h3>
             <p style="font-size:0.86rem; color:#CBD5E1; line-height:1.55; margin-bottom:18px;">
               This high-fidelity 3D simulation includes a full 226MB Phnom Penh city model.
@@ -467,7 +238,7 @@
               • Compatible with Chrome, Edge, Safari & Firefox
             </div>
             <a href="index.html" style="display:inline-block; background:linear-gradient(135deg, #16A34A, #22C55E); color:#FFF; padding:10px 22px; border-radius:10px; text-decoration:none; font-weight:700; font-size:0.88rem; margin-right:8px;">
-              🔄 Retry Load
+              Retry Load
             </a>
             <a href="/game" style="display:inline-block; background:rgba(255,255,255,0.1); color:#CBD5E1; padding:10px 18px; border-radius:10px; text-decoration:none; font-size:0.88rem;">
               Dedicated Player
@@ -478,71 +249,8 @@
       };
       document.body.appendChild(script);
 
-      // Bind Unified Pointer/Touch/Mouse to Virtual Buttons
-      function bindButton(id, key, code, keyCode) {
-        var btn = document.getElementById(id);
-        if (!btn) return;
-
-        var isPressed = false;
-        function press(e) {
-          if (e.cancelable && e.type !== 'mousedown') e.preventDefault();
-          if (isPressed) return;
-          isPressed = true;
-          btn.classList.add('active');
-          if (navigator.vibrate) { try { navigator.vibrate(15); } catch(err){} }
-          triggerKey(key, code, keyCode, true);
-        }
-
-        function release(e) {
-          if (e.cancelable && e.type !== 'mouseup' && e.type !== 'mouseleave') e.preventDefault();
-          if (!isPressed) return;
-          isPressed = false;
-          btn.classList.remove('active');
-          triggerKey(key, code, keyCode, false);
-        }
-
-        // Pointer Events (Unified modern touch + mouse)
-        if (window.PointerEvent) {
-          btn.addEventListener('pointerdown', press);
-          btn.addEventListener('pointerup', release);
-          btn.addEventListener('pointercancel', release);
-          btn.addEventListener('pointerleave', release);
-        } else {
-          // Touch Fallback
-          btn.addEventListener('touchstart', press, { passive: false });
-          btn.addEventListener('touchend', release, { passive: false });
-          btn.addEventListener('touchcancel', release, { passive: false });
-          // Mouse Fallback
-          btn.addEventListener('mousedown', press);
-          btn.addEventListener('mouseup', release);
-          btn.addEventListener('mouseleave', release);
-        }
-      }
-
-      bindButton('btn-up', 'w', 'KeyW', 87);
-      bindButton('btn-down', 's', 'KeyS', 83);
-      bindButton('btn-left', 'a', 'KeyA', 65);
-      bindButton('btn-right', 'd', 'KeyD', 68);
-      bindButton('btn-act', 'e', 'KeyE', 69);
-      bindButton('btn-drop', 'q', 'KeyQ', 81);
-
-      // Toolbar Controls
-      var ctrlToggleBtn = document.getElementById('toolbar-btn-controls');
-      var ctrlToggleLabel = document.getElementById('ctrl-toggle-label');
-      var virtualControls = document.getElementById('mobile-virtual-controls');
-      var controlsVisible = true;
-
-      ctrlToggleBtn.onclick = function() {
-        controlsVisible = !controlsVisible;
-        virtualControls.style.display = controlsVisible ? 'flex' : 'none';
-        ctrlToggleLabel.textContent = controlsVisible ? 'Controls: ON' : 'Controls: OFF';
-      };
-
-      document.getElementById('toolbar-btn-reload').onclick = function() {
-        window.location.reload();
-      };
-
-      document.getElementById('toolbar-btn-fullscreen').onclick = function() {
+      // Safe Fullscreen API helper
+      window.requestUnityFullscreen = function() {
         if (unityInst) {
           unityInst.SetFullscreen(1);
         } else {
@@ -554,18 +262,6 @@
             if (document.exitFullscreen) document.exitFullscreen();
           }
         }
-      };
-
-      // Help Modal Toggle
-      var helpModal = document.getElementById('help-modal');
-      document.getElementById('toolbar-btn-help').onclick = function() {
-        helpModal.style.display = 'flex';
-      };
-      document.getElementById('help-close-btn').onclick = function() {
-        helpModal.style.display = 'none';
-      };
-      document.getElementById('help-ok-btn').onclick = function() {
-        helpModal.style.display = 'none';
       };
     </script>
   </body>
