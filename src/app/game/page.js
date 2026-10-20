@@ -194,14 +194,34 @@ export default function DedicatedGamePage() {
           color: '#334155',
           gap: '12px'
         }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
-            <span style={{ color: '#0F172A', fontWeight: 700 }}>{isKhmer ? 'ការបញ្ជាកង់បី (Tuk-Tuk):' : 'Tuk-Tuk Controls:'}</span>
-            <span><kbd style={{ background: '#F0FDF4', color: '#166534', border: '1px solid #86EFAC', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>E</kbd> {isKhmer ? 'ឡើងជិះ / ចុះ' : 'Mount/Exit'}</span>
-            <span><kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>W,A,S,D</kbd> {isKhmer ? 'បើកបរ' : 'Drive'}</span>
-            <span><kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>Space</kbd> {isKhmer ? 'ហ្វ្រាំង' : 'Brake'}</span>
-            <span><kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>H</kbd> {isKhmer ? 'ស៊ីផ្លេ' : 'Horn'}</span>
-            <span><kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>V</kbd> {isKhmer ? 'កាមេរ៉ា' : 'Camera'}</span>
-            <span><kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>Q</kbd> {isKhmer ? 'បោះសំរាម' : 'Drop Trash'}</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: '#0F172A', fontWeight: 700, marginRight: '4px' }}>
+              {isKhmer ? 'ការបញ្ជាកង់បី (Tuk-Tuk):' : 'Tuk-Tuk Controls:'}
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F0FDF4', border: '1px solid #BBF7D0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#DCFCE7', color: '#166534', border: '1px solid #86EFAC', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>E</kbd>
+              <span style={{ color: '#15803D', fontWeight: 600 }}>{isKhmer ? 'ឡើងជិះ / ចុះ' : 'Mount / Exit'}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>W A S D</kbd>
+              <span>{isKhmer ? 'បើកបរ' : 'Drive'}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>Space</kbd>
+              <span>{isKhmer ? 'ហ្វ្រាំង' : 'Brake'}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>H</kbd>
+              <span>{isKhmer ? 'ស៊ីផ្លេ' : 'Horn'}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>V</kbd>
+              <span>{isKhmer ? 'កាមេរ៉ា' : 'Camera'}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+              <kbd style={{ background: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', padding: '1px 5px', borderRadius: '4px', fontWeight: 700, fontFamily: 'monospace' }}>Q</kbd>
+              <span>{isKhmer ? 'បោះសំរាម' : 'Drop Trash'}</span>
+            </span>
           </div>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.78rem' }}>

@@ -366,3 +366,26 @@ input, select, textarea {
   box-shadow: 0 8px 24px rgba(0, 240, 255, 0.5);
 }
 
+/* Clean City Game Controls & Cheatsheet Grid */
+.cleancity-cheatsheet-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) and (max-width: 959px) {
+  .cleancity-cheatsheet-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cleancity-cheatsheet-grid > div:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 960px) {
+  .cleancity-cheatsheet-grid {
+    grid-template-columns: 1fr 1.15fr 1fr;
+  }
+}
+

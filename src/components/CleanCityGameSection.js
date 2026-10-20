@@ -23,16 +23,30 @@ import {
 
 const kbdStyle = {
   display: 'inline-block',
-  background: '#FFFFFF',
+  background: '#F1F5F9',
   color: '#0F172A',
-  padding: '2px 7px',
+  padding: '2px 6px',
   borderRadius: '5px',
   border: '1px solid #CBD5E1',
-  boxShadow: '0 1px 1px rgba(0, 0, 0, 0.05), 0 1px 0 #CBD5E1',
-  fontSize: '0.74rem',
-  fontWeight: 600,
+  boxShadow: '0 1px 0 #CBD5E1',
+  fontSize: '0.72rem',
+  fontWeight: 700,
   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-  lineHeight: 1.4
+  lineHeight: 1.2
+};
+
+const chipStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '4px 8px',
+  borderRadius: '8px',
+  background: '#FFFFFF',
+  border: '1px solid #E2E8F0',
+  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
+  fontSize: '0.78rem',
+  fontWeight: 600,
+  color: '#334155'
 };
 
 export default function CleanCityGameSection({ lang }) {
@@ -339,161 +353,227 @@ export default function CleanCityGameSection({ lang }) {
 
           {/* Under-Game Controls & Mission Cheatsheet */}
           <div style={{
-            padding: '22px 26px',
+            padding: '20px 24px',
             background: '#FFFFFF',
-            borderTop: '1px solid #E2E8F0',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '16px',
-            alignItems: 'stretch'
+            borderTop: '1px solid #E2E8F0'
           }}>
-            {/* Keyboard / Mouse Controls */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              padding: '16px 18px',
-              borderRadius: '14px',
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '8px',
-                  background: '#EEF2FF',
-                  color: '#4F46E5',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <Keyboard size={15} />
-                </div>
-                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
-                  {isKhmer ? 'ការបញ្ជាទូទៅ' : 'Movement & Interaction'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '0.8rem', color: '#334155', alignItems: 'center' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>W A S D</kbd> <span>{isKhmer ? 'ដើរ' : 'Walk'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>Mouse</kbd> <span>{isKhmer ? 'បង្វិលមើល 360°' : '360° Look'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>E</kbd> <span>{isKhmer ? 'រើស / ពន្លត់ភ្លើង' : 'Pick / Extinguish'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>Q</kbd> <span>{isKhmer ? 'បោះចូលធុង' : 'Drop in Bin'}</span>
-                </span>
-              </div>
-            </div>
+            <div className="cleancity-cheatsheet-grid">
+              {/* Card 1: On-Foot Controls */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: '12px',
+                padding: '16px 18px',
+                borderRadius: '14px',
+                background: '#F8FAFC',
+                border: '1px solid #E2E8F0'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '8px',
+                        background: '#EEF2FF',
+                        color: '#4F46E5',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <Keyboard size={15} />
+                      </div>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
+                        {isKhmer ? 'ការបញ្ជាទូទៅ' : 'On-Foot Controls'}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: '#6366F1', background: '#EEF2FF', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                      {isKhmer ? 'ថ្មើរជើង' : 'Walking'}
+                    </span>
+                  </div>
 
-            {/* Kong Bey In-Game Vehicle Controls */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              padding: '16px 18px',
-              borderRadius: '14px',
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '8px',
-                  background: '#ECFDF5',
-                  color: '#059669',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <Car size={15} />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>W A S D</kbd>
+                      <span>{isKhmer ? 'ដើរ' : 'Walk'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>Mouse</kbd>
+                      <span>{isKhmer ? 'បង្វិល 360°' : '360° Look'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>E</kbd>
+                      <span>{isKhmer ? 'រើស / ពន្លត់ភ្លើង' : 'Pick / Extinguish'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>Q</kbd>
+                      <span>{isKhmer ? 'បោះចូលធុង' : 'Drop in Bin'}</span>
+                    </div>
+                  </div>
                 </div>
-                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
-                  {isKhmer ? 'ការបញ្ជាកង់បី (Tuk-Tuk)' : 'Kong Bey Tuk-Tuk'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '0.8rem', color: '#334155', alignItems: 'center' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={{ ...kbdStyle, background: '#F0FDF4', borderColor: '#86EFAC', color: '#166534' }}>E</kbd> <span>{isKhmer ? 'ឡើងជិះ / ចុះ' : 'Mount / Exit'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>W A S D</kbd> <span>{isKhmer ? 'បើកបរ' : 'Drive'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>Space</kbd> <span>{isKhmer ? 'ហ្វ្រាំង' : 'Brake'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>H</kbd> <span>{isKhmer ? 'ស៊ីផ្លេ' : 'Horn'}</span>
-                </span>
-                <span style={{ color: '#CBD5E1' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <kbd style={kbdStyle}>V</kbd> <span>{isKhmer ? 'កាមេរ៉ា' : 'Camera'}</span>
-                </span>
-              </div>
-            </div>
 
-            {/* 5-Color Waste Sorting Bins */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              padding: '16px 18px',
-              borderRadius: '14px',
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '8px',
-                  background: '#F0FDF4',
-                  color: '#16A34A',
+                  paddingTop: '8px',
+                  borderTop: '1px dashed #E2E8F0',
+                  fontSize: '0.73rem',
+                  color: '#64748B',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
+                  justifyContent: 'space-between'
                 }}>
-                  <Recycle size={15} />
+                  <span>{isKhmer ? '🚶 ដើរប្រមូលសំរាមតាមផ្លូវ' : '🚶 Collect street litter on foot'}</span>
+                  <span style={{ fontWeight: 700, color: '#2563EB' }}>{isKhmer ? 'ពន្លត់ផ្សែងពុល' : 'Extinguish Fires'}</span>
                 </div>
-                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
-                  {isKhmer ? 'ធុងញែកសំរាម ៥ ពណ៌' : '5-Color Sorting Standard'}
-                </span>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#DCFCE7', color: '#15803D', fontSize: '0.74rem', fontWeight: 600 }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16A34A', display: 'inline-block' }} />
-                  {isKhmer ? 'សរីរាង្គ (Organic)' : 'Organic'}
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#FEF9C3', color: '#854D0E', fontSize: '0.74rem', fontWeight: 600 }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#CA8A04', display: 'inline-block' }} />
-                  {isKhmer ? 'ប្លាស្ទិក (Plastic)' : 'Plastic'}
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#DBEAFE', color: '#1E40AF', fontSize: '0.74rem', fontWeight: 600 }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563EB', display: 'inline-block' }} />
-                  {isKhmer ? 'កែច្នៃ (Recycle)' : 'Recyclable'}
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#F1F5F9', color: '#475569', fontSize: '0.74rem', fontWeight: 600 }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#64748B', display: 'inline-block' }} />
-                  {isKhmer ? 'ទូទៅ (General)' : 'General'}
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#FEE2E2', color: '#991B1B', fontSize: '0.74rem', fontWeight: 600 }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#DC2626', display: 'inline-block' }} />
-                  {isKhmer ? 'គ្រោះថ្នាក់ (Hazard)' : 'Hazardous'}
-                </span>
+
+              {/* Card 2: Kong Bey Tuk-Tuk Controls */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: '12px',
+                padding: '16px 18px',
+                borderRadius: '14px',
+                background: '#F8FAFC',
+                border: '1px solid #E2E8F0'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '8px',
+                        background: '#ECFDF5',
+                        color: '#059669',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <Car size={15} />
+                      </div>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
+                        {isKhmer ? 'យានរ៉ឺម៉កកង់បី (Kong Bey)' : 'Kong Bey Tuk-Tuk'}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: '#059669', background: '#DCFCE7', padding: '2px 8px', borderRadius: '6px', fontWeight: 700 }}>
+                      {isKhmer ? 'ឃ្លាំង ១០ មុខ' : '10-Item Cargo'}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+                    <div style={{ ...chipStyle, background: '#F0FDF4', borderColor: '#BBF7D0' }}>
+                      <kbd style={{ ...kbdStyle, background: '#DCFCE7', color: '#15803D', borderColor: '#86EFAC', boxShadow: '0 1px 0 #86EFAC' }}>E</kbd>
+                      <span style={{ color: '#15803D', fontWeight: 700 }}>{isKhmer ? 'ឡើង / ចុះ' : 'Mount / Exit'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>W A S D</kbd>
+                      <span>{isKhmer ? 'បើកបរ' : 'Drive'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>Space</kbd>
+                      <span>{isKhmer ? 'ហ្វ្រាំង' : 'Brake'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>H</kbd>
+                      <span>{isKhmer ? 'ស៊ីផ្លេ' : 'Horn'}</span>
+                    </div>
+                    <div style={chipStyle}>
+                      <kbd style={kbdStyle}>V</kbd>
+                      <span>{isKhmer ? 'កាមេរ៉ា' : 'Camera'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  paddingTop: '8px',
+                  borderTop: '1px dashed #E2E8F0',
+                  fontSize: '0.73rem',
+                  color: '#64748B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <span>{isKhmer ? '⚡ ដឹកសំរាមទៅដេប៉ូកែច្នៃ' : '⚡ Unload cargo at Depot'}</span>
+                  <span style={{ fontWeight: 700, color: '#16A34A' }}>+50 PTS Bonus</span>
+                </div>
+              </div>
+
+              {/* Card 3: 5-Color Waste Sorting Bins */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: '12px',
+                padding: '16px 18px',
+                borderRadius: '14px',
+                background: '#F8FAFC',
+                border: '1px solid #E2E8F0'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '8px',
+                        background: '#F0FDF4',
+                        color: '#16A34A',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <Recycle size={15} />
+                      </div>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#0F172A' }}>
+                        {isKhmer ? 'ធុងញែកសំរាម ៥ ពណ៌' : '5-Color Sorting Standard'}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: '#16A34A', background: '#DCFCE7', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                      {isKhmer ? 'ស្តង់ដារកម្ពុជា' : 'MoE Standard'}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#DCFCE7', color: '#15803D', fontSize: '0.74rem', fontWeight: 600 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16A34A', display: 'inline-block' }} />
+                      {isKhmer ? 'សរីរាង្គ (Organic)' : 'Organic'}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#FEF9C3', color: '#854D0E', fontSize: '0.74rem', fontWeight: 600 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#CA8A04', display: 'inline-block' }} />
+                      {isKhmer ? 'ប្លាស្ទិក (Plastic)' : 'Plastic'}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#DBEAFE', color: '#1E40AF', fontSize: '0.74rem', fontWeight: 600 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563EB', display: 'inline-block' }} />
+                      {isKhmer ? 'កែច្នៃ (Recycle)' : 'Recyclable'}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#F1F5F9', color: '#475569', fontSize: '0.74rem', fontWeight: 600 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#64748B', display: 'inline-block' }} />
+                      {isKhmer ? 'ទូទៅ (General)' : 'General'}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 9px', borderRadius: '6px', background: '#FEE2E2', color: '#991B1B', fontSize: '0.74rem', fontWeight: 600 }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#DC2626', display: 'inline-block' }} />
+                      {isKhmer ? 'គ្រោះថ្នាក់ (Hazard)' : 'Hazardous'}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{
+                  paddingTop: '8px',
+                  borderTop: '1px dashed #E2E8F0',
+                  fontSize: '0.73rem',
+                  color: '#64748B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <span>{isKhmer ? '🎯 ញែកត្រូវពណ៌ដើម្បីបានពិន្ទុ' : '🎯 Sort into matching bin'}</span>
+                  <span style={{ fontWeight: 700, color: '#D97706' }}>Combo Bonus</span>
+                </div>
               </div>
             </div>
           </div>
